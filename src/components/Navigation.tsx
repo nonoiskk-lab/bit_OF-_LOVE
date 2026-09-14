@@ -1,0 +1,176 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCartStore, cartCount } from "@/lib/cart-store";
+
+const LINKS = [
+  { href: "/menu", label: "Menu" },
+  { href: "/order", label: "Order" },
+  { href: "/menu?group=protein", label: "Protein" },
+  { href: "/menu?group=coffee", label: "Coffee" },
+  { href: "/cottages", label: "Cottages" },
+  { href: "/catering", label: "Catering" },
+  { href: "/#about", label: "About" },
+];
+
+export default function Navigation() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const lines = useCartStore((s) => s.lines);
+  const toggleCart = useCartStore((s) => s.toggle);
+  const count = cartCount(lines);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  return (
+    <>
+      <header
+        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
+          scrolled || open ? "bg-lb-off-white/95 backdrop-blur border-b border-lb-charcoal/10" : "bg-transparent"
+        }`}
+      >
+        <div className="mx-auto max-w-[1600px] px-5 md:px-8 h-16 md:h-20 flex items-center justify-between">
+          <Link href="/" className="font-display font-extrabold text-xl md:text-2xl tracking-tight">
+            LOV<span className="text-lb-red">BITES</span>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-8 font-body text-sm font-semibold uppercase tracking-wide">
+            {LINKS.slice(0, 6).map((l) => (
+              <Link key={l.href} href={l.href} className="hover:text-lb-red transition-colors">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/table"
+              className="rounded-full border border-lb-charcoal/20 px-5 py-2.5 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
+            >
+              Book a Table
+            </Link>
+            <Link
+              href="/order"
+              className="rounded-full bg-lb-red px-5 py-2.5 text-sm font-semibold text-lb-cream hover:bg-lb-red-deep transition-colors"
+            >
+              Order Now
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-3 md:hidden">
+            <button
+              aria-label="Open cart"
+              onClick={toggleCart}
+              className="relative h-10 w-10 flex items-center justify-center rounded-full border border-lb-charcoal/15"
+            >
+              🛍
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-lb-red text-[10px] font-bold text-lb-cream flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
+            <button
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
+              className="h-10 w-10 flex flex-col items-center justify-center gap-1.5 rounded-full border border-lb-charcoal/15"
+            >
+              <span
+                className={`block h-[2px] w-5 bg-lb-charcoal transition-transform ${
+                  open ? "translate-y-[3.5px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-[2px] w-5 bg-lb-charcoal transition-transform ${
+                  open ? "-translate-y-[3.5px] -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
+
+          <button
+            aria-label="Open cart"
+            onClick={toggleCart}
+            className="hidden md:flex relative h-11 w-11 items-center justify-center rounded-full border border-lb-charcoal/15 ml-3"
+          >
+            🛍
+            {count > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-lb-red text-[10px] font-bold text-lb-cream flex items-center justify-center">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: "circle(0% at 100% 0%)" }}
+            animate={{ clipPath: "circle(150% at 100% 0%)" }}
+            exit={{ clipPath: "circle(0% at 100% 0%)" }}
+            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-lb-charcoal text-lb-cream flex flex-col justify-center px-8"
+          >
+            <nav className="flex flex-col gap-2">
+              {LINKS.map((l, i) => (
+                <motion.div
+                  key={l.href}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.05 }}
+                >
+                  <Link
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="font-display font-extrabold uppercase text-5xl sm:text-6xl leading-[1.05] hover:text-lb-red transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-12 flex flex-wrap gap-4"
+            >
+              <Link
+                href="/cottages"
+                onClick={() => setOpen(false)}
+                className="rounded-full bg-lb-red px-6 py-3 text-sm font-semibold"
+              >
+                Book Private Cottage
+              </Link>
+              <a
+                href="tel:+919999999999"
+                className="rounded-full border border-lb-cream/40 px-6 py-3 text-sm font-semibold"
+              >
+                Call LOVBITES
+              </a>
+            </motion.div>
+            <p className="mt-10 font-body text-xs uppercase tracking-[0.3em] text-lb-cream/50">
+              Hirapur • Dhanbad, Jharkhand
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
