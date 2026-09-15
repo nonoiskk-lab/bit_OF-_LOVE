@@ -1,13 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateId, readCollection, writeCollection } from "@/lib/server/file-store";
 import { CottageBookingRecord } from "@/lib/types";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date");
   const all = await readCollection<CottageBookingRecord>("cottage-bookings");
   const active = all.filter((b) => b.status !== "CANCELLED");
   const bookings = date ? active.filter((b) => b.date === date) : active;
-  return NextResponse.json({ bookings });
+
+  // Anyone booking a cottage needs to see live availability, so this stays public —
+  // but only admins get customer names/phone numbers back.
+  if (isAdminRequest(req)) {
+    return NextResponse.json({ bookings });
+  }
+  const publicBookings = bookings.map(({ id, cottageId, date, time, status }) => ({
+    id,
+    cottageId,
+    date,
+    time,
+    status,
+  }));
+  return NextResponse.json({ bookings: publicBookings });
 }
 
 export async function POST(req: NextRequest) {

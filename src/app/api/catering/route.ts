@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendToCollection, generateId, readCollection } from "@/lib/server/file-store";
 import { CateringLead } from "@/lib/types";
+import { isAdminRequest } from "@/lib/server/admin-auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!isAdminRequest(req)) {
+    return NextResponse.json({ error: "Admin login required." }, { status: 401 });
+  }
   const leads = await readCollection<CateringLead>("catering-leads");
   return NextResponse.json({ leads: leads.reverse() });
 }

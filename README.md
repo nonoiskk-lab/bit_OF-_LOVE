@@ -11,6 +11,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+To use the admin dashboard (`/admin`), copy `.env.example` to `.env.local` and set `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` (a generator command is in the file).
+
 ## What's implemented
 
 - **Homepage** — the 16-section structure from the brief: hero, mood selector, the LOVBITES Edit (signatures), Protein Lab, Coffee, Chicken Basket micro-brand, menu journey, fine dine transition, private cottages, date night, catering, events, Instagram wall, reviews, location, final CTA.
@@ -19,7 +21,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Private cottage booking** (`/cottages`) — date → live availability for both cottages → guest count/occasion/custom request → details → confirmation with calendar (.ics), WhatsApp and email share links. `POST /api/cottage-booking` rejects a conflicting cottage+date+time booking (409), so double-booking is actually prevented, not just visually discouraged.
 - **Table booking** (`/table`) — separate from cottage inventory, as the brief requires.
 - **Catering** (`/catering`) — quote request form.
-- **Admin** (`/admin`) — read-only dashboard over orders, table bookings, cottage bookings and catering leads.
+- **Admin** (`/admin`) — password-gated dashboard over orders, table bookings, cottage bookings and catering leads. Login is a signed, HttpOnly session cookie (`src/lib/server/admin-auth.ts`, no extra dependency); the `GET` handlers for orders/table-bookings/catering-leads return `401` without a valid session, and the public cottage-availability endpoint strips customer name/phone for unauthenticated callers so a booking page visitor never sees other guests' details.
 
 ## Deliberate scope decisions
 
@@ -29,7 +31,7 @@ This brief describes a full production platform (payments, a CMS-driven admin, r
 - **Payment** is captured as a preference (UPI/Card/COD) and recorded on the order; no payment gateway is wired up. Add Razorpay before taking real money.
 - **Photography** is an art-directed placeholder system (`src/components/ui/FoodImage.tsx`) — mood-tinted gradients standing in for a real shoot. The brief explicitly rules out AI-generated or stock food photography as a substitute for the real thing, so this is deliberate, not a shortcut: drop in the real shoot before launch.
 - **Reviews** are intentionally empty with a note in place of the section — no fabricated quotes, per the brief's own anti-pattern list. Wire up Google Reviews/Zomato before launch.
-- **Admin** is read-only and has no authentication. Add real auth (and a real database with row-level security) before exposing it outside the team.
+- **Admin auth** is one shared password (env-configured), not per-user accounts — fine for a small team, not for a multi-staff rollout. Swap for Supabase Auth (or similar) with row-level security when you outgrow a single shared login. A Supabase migration for this project was attempted in this session but blocked on the connected account's 2-project free-tier limit (both existing projects are already in active use) — provisioning it is a five-minute follow-up once a project slot is free, and everything here (the `file-store` module, the auth boundary on each route) is already shaped to drop straight into Postgres/RLS without changing the API surface.
 - Analytics (GA4/Meta Pixel), a real Google Maps API embed, and WhatsApp Business integration all need real credentials this environment doesn't have — the location map uses the credential-free Google Maps embed URL, and WhatsApp/call links use placeholder numbers to swap in.
 
 ## Tech
