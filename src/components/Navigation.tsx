@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCartStore, cartCount } from "@/lib/cart-store";
+import LovbitesLogo from "@/components/ui/LovbitesLogo";
 
 const LINKS = [
   { href: "/menu", label: "Menu" },
@@ -17,17 +18,9 @@ const LINKS = [
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const lines = useCartStore((s) => s.lines);
   const toggleCart = useCartStore((s) => s.toggle);
   const count = cartCount(lines);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -38,14 +31,10 @@ export default function Navigation() {
 
   return (
     <>
-      <header
-        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
-          scrolled || open ? "bg-lb-off-white/95 backdrop-blur border-b border-lb-charcoal/10" : "bg-transparent"
-        }`}
-      >
+      <header className="fixed top-0 inset-x-0 z-50 bg-lb-off-white/95 backdrop-blur border-b border-lb-charcoal/10">
         <div className="mx-auto max-w-[1600px] px-5 md:px-8 h-16 md:h-20 flex items-center justify-between">
-          <Link href="/" className="font-display font-extrabold text-xl md:text-2xl tracking-tight">
-            LOV<span className="text-lb-red">BITES</span>
+          <Link href="/" aria-label="LOVBITES home">
+            <LovbitesLogo size="sm" showTagline={false} />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 font-body text-sm font-semibold uppercase tracking-wide">
