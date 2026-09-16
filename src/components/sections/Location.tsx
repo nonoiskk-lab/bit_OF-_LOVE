@@ -22,11 +22,12 @@ export default function Location() {
           </h2>
           <address className="not-italic text-lb-neutral space-y-1 mb-8">
             <p>LOVBITES</p>
-            <p>Hirapur, Dhanbad</p>
-            <p>Jharkhand, India</p>
+            <p>Ground Floor, Om Sai Plaza</p>
+            <p>Police Line Road, Near HDFC Bank</p>
+            <p>Dhanbad, Jharkhand – 826001</p>
           </address>
           <a
-            href="https://www.google.com/maps/search/?api=1&query=Hirapur%2C+Dhanbad%2C+Jharkhand"
+            href="https://maps.app.goo.gl/TyxkmDjfmrHax2Ne9"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex rounded-full bg-lb-red text-lb-cream px-7 py-3.5 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
@@ -44,7 +45,7 @@ export default function Location() {
         >
           <iframe
             title="LOVBITES location map"
-            src="https://www.google.com/maps?q=Hirapur,Dhanbad,Jharkhand&output=embed"
+            src="https://www.google.com/maps?q=Om+Sai+Plaza,+Police+Line+Road,+Dhanbad,+Jharkhand+826001&output=embed"
             className="h-full w-full"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

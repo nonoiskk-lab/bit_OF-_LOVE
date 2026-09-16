@@ -8,7 +8,7 @@ export default function SiteFooter() {
         <div className="md:col-span-2">
           <LovbitesLogo size="sm" showTagline={false} align="start" />
           <p className="mt-3 max-w-sm text-sm text-lb-neutral">
-            When hunger strikes, you know where to go. Hirapur, Dhanbad, Jharkhand —
+            When hunger strikes, you know where to go. Dhanbad, Jharkhand —
             food, coffee, protein and private cottages, all in one address.
           </p>
         </div>
@@ -29,8 +29,19 @@ export default function SiteFooter() {
             Visit
           </p>
           <ul className="space-y-2 text-sm text-lb-neutral">
-            <li>Hirapur, Dhanbad</li>
-            <li>Jharkhand, India</li>
+            <li>Ground Floor, Om Sai Plaza</li>
+            <li>Police Line Road, Near HDFC Bank</li>
+            <li>Dhanbad, Jharkhand – 826001</li>
+            <li>
+              <a
+                href="https://maps.app.goo.gl/TyxkmDjfmrHax2Ne9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-lb-red underline underline-offset-2"
+              >
+                Get Directions
+              </a>
+            </li>
             <li><a href="tel:+919031627293" className="hover:text-lb-red">+91 90316 27293</a></li>
             <li>
               <a
