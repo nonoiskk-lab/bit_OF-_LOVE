@@ -18,8 +18,8 @@ interface LovbitesLogoProps {
 }
 
 const MAX_WIDTH: Record<"sm" | "lg", string> = {
-  sm: "clamp(110px, 16vw, 150px)",
-  lg: "clamp(190px, 28vw, 300px)",
+  sm: "clamp(130px, 18vw, 180px)",
+  lg: "clamp(280px, 36vw, 460px)",
 };
 
 export default function LovbitesLogo({
@@ -46,8 +46,8 @@ export default function LovbitesLogo({
         <Image
           src="/logo.png"
           alt="LOVBITES — Cafe & Kitchen | 8 AM Onwards"
-          width={392}
-          height={130}
+          width={784}
+          height={260}
           priority
           style={imgStyle}
         />
@@ -55,8 +55,8 @@ export default function LovbitesLogo({
         <Image
           src="/logo-mark.png"
           alt="LOVBITES"
-          width={392}
-          height={94}
+          width={784}
+          height={188}
           priority
           style={imgStyle}
         />
