@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useAnimation, useReducedMotion } from "framer-motion";
 import { useCartStore, cartCount, cartTotal } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/utils";
@@ -9,6 +10,10 @@ import { formatPrice } from "@/lib/utils";
  * The LOVBITES header "waiter" — a real interface to the existing cart
  * (useCartStore), not a decorative extra. It replaces the old plain
  * cart-icon button: same store, same drawer, same checkout flow.
+ *
+ * The artwork (public/waiter-full.png, public/waiter-face.png) is cropped
+ * from the reference character LovBites supplied — background removed,
+ * never redrawn or redistorted, object-fit: contain throughout.
  *
  * On first mount each browser session he plays a short "arriving to take
  * your order" entrance (peek from the left edge -> look -> step in ->
@@ -23,7 +28,15 @@ interface LovbitesWaiterProps {
   className?: string;
 }
 
-const DIAMETER: Record<"sm" | "lg", number> = { sm: 40, lg: 64 };
+// public/waiter-full.png is 556x1064 (the real, background-removed
+// character); public/waiter-face.png is 556x600, a tighter mobile-friendly
+// crop of the same artwork. Containers are sized to each image's own aspect
+// ratio so object-fit: contain never letterboxes or distorts either one.
+const BADGE = {
+  lg: { width: 42, height: 80, src: "/waiter-full.png", intrinsicW: 556, intrinsicH: 1064 },
+  sm: { width: 41, height: 44, src: "/waiter-face.png", intrinsicW: 556, intrinsicH: 600 },
+} as const;
+
 const EASE = [0.22, 1, 0.36, 1] as const;
 const INTRO_SEEN_KEY = "lovbites-waiter-intro-seen";
 
@@ -38,7 +51,6 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
 
   const prefersReducedMotion = useReducedMotion();
   const bodyControls = useAnimation();
-  const noteControls = useAnimation();
   const prevCount = useRef(count);
   const mounted = useRef(false);
   const [phase, setPhase] = useState<"entering" | "idle">("entering");
@@ -85,8 +97,8 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
           transition: { duration: 0.45, ease: "easeInOut" },
         });
         if (cancelled) return;
-        await noteControls.start({
-          scale: [1, 1.03, 1],
+        await bodyControls.start({
+          scale: [1, 1.04, 1],
           rotate: [0, -2, 0],
           transition: { duration: 0.4 },
         });
@@ -117,12 +129,8 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
       if (!prefersReducedMotion) {
         bodyControls.start({
           rotate: [0, -4, 3, 0],
-          transition: { duration: 0.5, ease: "easeInOut" },
-        });
-        noteControls.start({
           scale: [1, 1.05, 1],
-          rotate: [0, -3, 0],
-          transition: { duration: 0.4 },
+          transition: { duration: 0.5, ease: "easeInOut" },
         });
       }
       const t = setTimeout(() => setJustAdded(false), 2200);
@@ -137,7 +145,6 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
     setHovered(true);
     if (size === "lg" && phase === "idle" && !prefersReducedMotion) {
       bodyControls.start({ x: "2%", scale: 1.04, transition: { duration: 0.3, ease: EASE } });
-      noteControls.start({ rotate: -4, transition: { duration: 0.25 } });
     }
   };
 
@@ -145,19 +152,17 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
     setHovered(false);
     if (size === "lg" && phase === "idle" && !prefersReducedMotion) {
       bodyControls.start({ x: "0%", scale: 1, transition: { duration: 0.3, ease: EASE } });
-      noteControls.start({ rotate: 0, transition: { duration: 0.3 } });
     }
   };
 
   const handleClick = () => {
     if (!prefersReducedMotion) {
       bodyControls.start({ rotate: [0, -3, 2, 0], transition: { duration: 0.2 } });
-      noteControls.start({ x: [0, 2, 0], transition: { duration: 0.2 } });
     }
     setTimeout(toggle, prefersReducedMotion ? 0 : 180);
   };
 
-  const diameter = DIAMETER[size];
+  const badge = BADGE[size];
   const label = hasItems
     ? `Open your order. ${count} item${count === 1 ? "" : "s"} in cart.`
     : "Open your order. Cart is empty.";
@@ -199,28 +204,31 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
         type="button"
         onClick={handleClick}
         aria-label={label}
-        className="relative flex items-center justify-center rounded-full border border-lb-charcoal/15 bg-white shadow-sm hover:border-lb-red/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lb-red focus-visible:outline-offset-2 transition-colors"
-        style={{ height: diameter, width: diameter }}
+        className="relative flex items-center justify-center rounded-[999px] border border-lb-charcoal/15 bg-white shadow-sm hover:border-lb-red/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lb-red focus-visible:outline-offset-2 transition-colors overflow-hidden"
+        style={{ height: badge.height, width: badge.width }}
       >
-        <div style={{ width: diameter * 0.72, height: diameter * 0.72, overflow: "hidden", borderRadius: "9999px" }}>
-          <motion.div
-            animate={
-              phase === "idle" && !prefersReducedMotion
-                ? { y: [0, -1.5, 0] }
-                : undefined
-            }
-            transition={
-              phase === "idle" && !prefersReducedMotion
-                ? { duration: 5, repeat: Infinity, ease: "easeInOut" }
-                : undefined
-            }
-            style={{ width: "100%", height: "100%" }}
-          >
-            <motion.div animate={bodyControls} initial={RESTING} className="h-full w-full">
-              <WaiterGlyph noteControls={noteControls} />
-            </motion.div>
+        <motion.div
+          animate={
+            phase === "idle" && !prefersReducedMotion ? { y: [0, -1.5, 0] } : undefined
+          }
+          transition={
+            phase === "idle" && !prefersReducedMotion
+              ? { duration: 5, repeat: Infinity, ease: "easeInOut" }
+              : undefined
+          }
+          style={{ width: "100%", height: "100%", overflow: "hidden" }}
+        >
+          <motion.div animate={bodyControls} initial={RESTING} className="relative h-full w-full">
+            <Image
+              src={badge.src}
+              alt="LOVBITES waiter — open your order"
+              width={badge.intrinsicW}
+              height={badge.intrinsicH}
+              priority
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </motion.div>
-        </div>
+        </motion.div>
 
         {hasItems && (
           <motion.span
@@ -254,51 +262,5 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-export function WaiterGlyph({
-  noteControls,
-}: {
-  noteControls?: ReturnType<typeof useAnimation>;
-}) {
-  return (
-    <svg viewBox="0 0 64 64" className="h-full w-full" role="presentation" aria-hidden="true">
-      <path d="M32 10c-8 0-13 6-13 13v3h26v-3c0-7-5-13-13-13z" fill="#2a231f" />
-      <circle cx="32" cy="26" r="10" fill="#e7b98c" />
-      <circle cx="28.2" cy="25.5" r="1.3" fill="#2a231f" />
-      <circle cx="35.8" cy="25.5" r="1.3" fill="#2a231f" />
-      <path
-        d="M28 30c1.3 1.4 3 2 4 2s2.7-.6 4-2"
-        stroke="#a8654a"
-        strokeWidth="1.4"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 58c0-10.5 8-16.5 18-16.5S50 47.5 50 58"
-        fill="#fdfbf7"
-        stroke="#e5ddd2"
-        strokeWidth="1"
-      />
-      <path d="M22 42c0-2 4-3.5 10-3.5s10 1.5 10 3.5l-2 16H24z" fill="#d3341f" />
-      <path
-        d="M32 47.2c-.9-1.1-2.6-1.1-3.3 0-.7 1-.4 2.3.7 3.3l2.6 2.3 2.6-2.3c1.1-1 1.4-2.3.7-3.3-.7-1.1-2.4-1.1-3.3 0z"
-        fill="#fdfbf7"
-      />
-      <circle cx="49" cy="44" r="3.4" fill="#e7b98c" />
-      <g transform="translate(50 33) rotate(8)">
-        <motion.g
-          animate={noteControls}
-          initial={{ x: 0, y: 0, scale: 1, rotate: 0 }}
-          style={{ transformOrigin: "5.5px 7px" }}
-        >
-          <rect x="0" y="0" width="11" height="14" rx="1.5" fill="#fdfbf7" stroke="#e5ddd2" strokeWidth="1" />
-          <rect x="2" y="3" width="7" height="1.3" rx="0.6" fill="#d3341f" />
-          <rect x="2" y="6" width="7" height="1" rx="0.5" fill="#cfc6ba" />
-          <rect x="2" y="8.4" width="5" height="1" rx="0.5" fill="#cfc6ba" />
-        </motion.g>
-      </g>
-    </svg>
   );
 }

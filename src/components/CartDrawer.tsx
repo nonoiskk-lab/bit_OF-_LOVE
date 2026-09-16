@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useCartStore, cartTotal } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/utils";
-import { WaiterGlyph } from "@/components/ui/LovbitesWaiter";
 
 export default function CartDrawer() {
   const { lines, isOpen, close, setQuantity } = useCartStore();
@@ -51,10 +51,14 @@ export default function CartDrawer() {
 
             {lines.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-                <div className="h-16 w-16 mb-4 rounded-full bg-white border border-lb-charcoal/10 shadow-sm flex items-center justify-center">
-                  <div className="h-11 w-11">
-                    <WaiterGlyph />
-                  </div>
+                <div className="relative h-16 w-[54px] mb-4 rounded-[999px] bg-white border border-lb-charcoal/10 shadow-sm overflow-hidden">
+                  <Image
+                    src="/waiter-face.png"
+                    alt=""
+                    width={556}
+                    height={600}
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  />
                 </div>
                 <p className="font-display font-bold uppercase text-lg mb-2">
                   Your Order Is Waiting <span className="text-lb-red">&hearts;</span>
