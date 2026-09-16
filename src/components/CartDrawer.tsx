@@ -1,13 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useCartStore, cartTotal } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/utils";
+import { WaiterGlyph } from "@/components/ui/LovbitesWaiter";
 
 export default function CartDrawer() {
   const { lines, isOpen, close, setQuantity } = useCartStore();
   const total = cartTotal(lines);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, close]);
 
   return (
     <AnimatePresence>
@@ -28,10 +39,10 @@ export default function CartDrawer() {
             className="fixed right-0 top-0 z-[70] h-full w-full sm:w-[420px] bg-lb-off-white flex flex-col"
           >
             <div className="flex items-center justify-between px-5 py-5 border-b border-lb-charcoal/10">
-              <h2 className="font-display font-bold uppercase text-xl">Your Cart</h2>
+              <h2 className="font-display font-bold uppercase text-xl">Your Order</h2>
               <button
                 onClick={close}
-                aria-label="Close cart"
+                aria-label="Close your order"
                 className="h-9 w-9 rounded-full border border-lb-charcoal/15 flex items-center justify-center"
               >
                 ✕
@@ -40,12 +51,16 @@ export default function CartDrawer() {
 
             {lines.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-                <span className="text-4xl mb-4">🛍</span>
+                <div className="h-16 w-16 mb-4 rounded-full bg-white border border-lb-charcoal/10 shadow-sm flex items-center justify-center">
+                  <div className="h-11 w-11">
+                    <WaiterGlyph />
+                  </div>
+                </div>
                 <p className="font-display font-bold uppercase text-lg mb-2">
-                  Your Cravings Are Waiting
+                  Your Order Is Waiting <span className="text-lb-red">&hearts;</span>
                 </p>
                 <p className="text-sm text-lb-neutral mb-6">
-                  Nothing in your cart yet — go find something to love.
+                  Add something delicious from our menu.
                 </p>
                 <Link
                   href="/menu"
@@ -97,7 +112,7 @@ export default function CartDrawer() {
                     onClick={close}
                     className="flex items-center justify-center rounded-full bg-lb-red px-6 py-3.5 text-sm font-semibold text-lb-cream hover:bg-lb-red-deep transition-colors"
                   >
-                    Go to Checkout
+                    Proceed to Checkout
                   </Link>
                 </div>
               </>

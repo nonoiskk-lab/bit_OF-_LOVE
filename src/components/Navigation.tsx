@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCartStore, cartCount } from "@/lib/cart-store";
 import LovbitesLogo from "@/components/ui/LovbitesLogo";
+import LovbitesWaiter from "@/components/ui/LovbitesWaiter";
 
 const LINKS = [
   { href: "/menu", label: "Menu" },
@@ -18,9 +18,6 @@ const LINKS = [
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
-  const lines = useCartStore((s) => s.lines);
-  const toggleCart = useCartStore((s) => s.toggle);
-  const count = cartCount(lines);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -61,18 +58,7 @@ export default function Navigation() {
           </div>
 
           <div className="flex items-center gap-3 md:hidden">
-            <button
-              aria-label="Open cart"
-              onClick={toggleCart}
-              className="relative h-10 w-10 flex items-center justify-center rounded-full border border-lb-charcoal/15"
-            >
-              🛍
-              {count > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-lb-red text-[10px] font-bold text-lb-cream flex items-center justify-center">
-                  {count}
-                </span>
-              )}
-            </button>
+            <LovbitesWaiter size="sm" />
             <button
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
@@ -92,18 +78,9 @@ export default function Navigation() {
             </button>
           </div>
 
-          <button
-            aria-label="Open cart"
-            onClick={toggleCart}
-            className="hidden md:flex relative h-11 w-11 items-center justify-center rounded-full border border-lb-charcoal/15 ml-3"
-          >
-            🛍
-            {count > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-lb-red text-[10px] font-bold text-lb-cream flex items-center justify-center">
-                {count}
-              </span>
-            )}
-          </button>
+          <div className="hidden md:flex ml-3">
+            <LovbitesWaiter size="lg" />
+          </div>
         </div>
       </header>
 
