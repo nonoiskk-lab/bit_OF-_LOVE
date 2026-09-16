@@ -29,9 +29,20 @@ export default function SiteFooter() {
             Visit
           </p>
           <ul className="space-y-2 text-sm text-lb-neutral">
-            <li>Ground Floor, Om Sai Plaza</li>
-            <li>Police Line Road, Near HDFC Bank</li>
-            <li>Dhanbad, Jharkhand – 826001</li>
+            <li>
+              <a
+                href="https://maps.app.goo.gl/TyxkmDjfmrHax2Ne9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-lb-red"
+              >
+                Ground Floor, Om Sai Plaza
+                <br />
+                Police Line Road, Near HDFC Bank
+                <br />
+                Dhanbad, Jharkhand – 826001
+              </a>
+            </li>
             <li>
               <a
                 href="https://maps.app.goo.gl/TyxkmDjfmrHax2Ne9"
