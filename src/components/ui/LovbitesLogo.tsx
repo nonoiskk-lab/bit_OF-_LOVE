@@ -9,7 +9,7 @@ import clsx from "clsx";
  */
 const baloo = Baloo_2({
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: ["700"],
   variable: "--font-baloo",
 });
 
@@ -24,7 +24,7 @@ const SIZE = {
   sm: { text: "text-2xl md:text-3xl", icon: "h-7 w-7 md:h-8 md:w-8", tagline: "text-[10px]" },
   lg: {
     text: "text-6xl sm:text-7xl md:text-8xl",
-    icon: "h-14 w-14 sm:h-16 sm:w-16 md:h-[4.5rem] md:w-[4.5rem]",
+    icon: "h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16",
     tagline: "text-base md:text-lg tracking-[0.04em]",
   },
 } as const;
@@ -47,7 +47,7 @@ export default function LovbitesLogo({
     >
       <div
         className={clsx(
-          "flex items-center justify-center font-extrabold text-lb-red leading-none",
+          "flex items-center justify-center font-bold text-lb-red leading-none",
           s.text
         )}
         style={{ fontFamily: "var(--font-baloo)" }}
