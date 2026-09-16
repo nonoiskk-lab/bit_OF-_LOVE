@@ -15,7 +15,7 @@ import Events from "@/components/sections/Events";
 import InstagramWall from "@/components/sections/InstagramWall";
 import Reviews from "@/components/sections/Reviews";
 import Location from "@/components/sections/Location";
-import FinalCTA from "@/components/sections/FinalCTA";
+import OurStory from "@/components/sections/OurStory";
 
 export default function Home() {
   return (
@@ -37,7 +37,7 @@ export default function Home() {
       <InstagramWall />
       <Reviews />
       <Location />
-      <FinalCTA />
+      <OurStory />
     </>
   );
 }
