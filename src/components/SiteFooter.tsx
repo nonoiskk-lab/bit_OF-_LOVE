@@ -31,10 +31,10 @@ export default function SiteFooter() {
           <ul className="space-y-2 text-sm text-lb-neutral">
             <li>Hirapur, Dhanbad</li>
             <li>Jharkhand, India</li>
-            <li><a href="tel:+919999999999" className="hover:text-lb-red">+91 99999 99999</a></li>
+            <li><a href="tel:+919031627293" className="hover:text-lb-red">+91 90316 27293</a></li>
             <li>
               <a
-                href="https://wa.me/919999999999"
+                href="https://wa.me/919031627293"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-lb-red"

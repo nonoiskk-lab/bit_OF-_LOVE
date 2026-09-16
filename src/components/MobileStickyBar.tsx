@@ -5,9 +5,9 @@ import Link from "next/link";
 const ITEMS = [
   { href: "/order", label: "Order", icon: "🛍" },
   { href: "/table", label: "Book", icon: "📅" },
-  { href: "tel:+919999999999", label: "Call", icon: "📞" },
+  { href: "tel:+919031627293", label: "Call", icon: "📞" },
   {
-    href: "https://wa.me/919999999999",
+    href: "https://wa.me/919031627293",
     label: "WhatsApp",
     icon: "💬",
     external: true,

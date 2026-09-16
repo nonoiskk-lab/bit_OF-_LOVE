@@ -148,7 +148,7 @@ export default function Navigation() {
                 Book Private Cottage
               </Link>
               <a
-                href="tel:+919999999999"
+                href="tel:+919031627293"
                 className="rounded-full border border-lb-charcoal/20 px-6 py-3 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
               >
                 Call LOVBITES
