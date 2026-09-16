@@ -21,11 +21,11 @@ interface LovbitesLogoProps {
 }
 
 const SIZE = {
-  sm: { text: "text-2xl md:text-3xl", icon: "h-6 w-6 md:h-7 md:w-7", tagline: "text-[10px]" },
+  sm: { text: "text-2xl md:text-3xl", icon: "h-7 w-7 md:h-8 md:w-8", tagline: "text-[10px]" },
   lg: {
     text: "text-6xl sm:text-7xl md:text-8xl",
-    icon: "h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16",
-    tagline: "text-sm md:text-base tracking-[0.15em]",
+    icon: "h-14 w-14 sm:h-16 sm:w-16 md:h-[4.5rem] md:w-[4.5rem]",
+    tagline: "text-base md:text-lg tracking-[0.04em]",
   },
 } as const;
 
@@ -53,17 +53,15 @@ export default function LovbitesLogo({
         style={{ fontFamily: "var(--font-baloo)" }}
       >
         <span>L</span>
-        <HeartMark className={clsx(s.icon, "mx-[0.03em] -translate-y-[0.02em]")} />
+        <HeartMark className={clsx(s.icon, "mx-[0.01em] -translate-y-[0.03em]")} />
         <span>vBites</span>
       </div>
       {showTagline && (
         <p
-          className={clsx(
-            "mt-3 uppercase text-lb-neutral font-medium tracking-[0.2em]",
-            s.tagline
-          )}
+          className={clsx("mt-3 text-lb-charcoal/70 font-normal", s.tagline)}
+          style={{ fontFamily: "var(--font-body)" }}
         >
-          Cafe &amp; Kitchen <span className="text-lb-red/60 mx-1.5">|</span> 8 AM Onwards
+          Cafe &amp; Kitchen <span className="text-lb-red/50 mx-2">|</span> 8 AM Onwards
         </p>
       )}
     </div>
@@ -96,10 +94,15 @@ function HeartMark({ className }: { className?: string }) {
         strokeLinecap="round"
         fill="none"
       />
-      {/* fork peeking out bottom-right */}
-      <g stroke="white" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M22.5 18.5v9" />
-        <path d="M20.3 18.5v3.2M22.5 18.5v3.2M24.7 18.5v3.2" />
+      {/* fork peeking out bottom-right, tilted */}
+      <g
+        stroke="white"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        transform="rotate(22 22 21)"
+      >
+        <path d="M22 17v10" />
+        <path d="M19.8 17v3.2M22 17v3.2M24.2 17v3.2" />
       </g>
     </svg>
   );
