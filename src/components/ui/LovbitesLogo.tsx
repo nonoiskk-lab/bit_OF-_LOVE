@@ -1,9 +1,13 @@
 import Image from "next/image";
 import clsx from "clsx";
+import type { CSSProperties } from "react";
 
 /**
  * Real LOVBITES brand mark, cropped from the official reference design
  * (public/logo.png = wordmark + tagline, public/logo-mark.png = wordmark only).
+ * Sized via inline style (not Tailwind classes) so the max render size is
+ * guaranteed regardless of class purge/ordering — the source is a low-res
+ * crop and blows up into visible pixelation if it renders too large.
  */
 
 interface LovbitesLogoProps {
@@ -13,10 +17,10 @@ interface LovbitesLogoProps {
   className?: string;
 }
 
-const SIZE = {
-  sm: "h-8 md:h-9",
-  lg: "h-16 sm:h-20 md:h-24",
-} as const;
+const MAX_WIDTH: Record<"sm" | "lg", string> = {
+  sm: "clamp(110px, 16vw, 150px)",
+  lg: "clamp(190px, 28vw, 300px)",
+};
 
 export default function LovbitesLogo({
   size = "lg",
@@ -24,6 +28,12 @@ export default function LovbitesLogo({
   align = "center",
   className,
 }: LovbitesLogoProps) {
+  const imgStyle: CSSProperties = {
+    width: "100%",
+    height: "auto",
+    maxWidth: MAX_WIDTH[size],
+  };
+
   return (
     <div
       className={clsx(
@@ -39,7 +49,7 @@ export default function LovbitesLogo({
           width={392}
           height={130}
           priority
-          className={clsx("w-auto", SIZE[size])}
+          style={imgStyle}
         />
       ) : (
         <Image
@@ -48,7 +58,7 @@ export default function LovbitesLogo({
           width={392}
           height={94}
           priority
-          className={clsx("w-auto", SIZE[size])}
+          style={imgStyle}
         />
       )}
     </div>
