@@ -28,13 +28,12 @@ interface LovbitesWaiterProps {
   className?: string;
 }
 
-// public/waiter-full.png is 556x1064 (the real, background-removed
-// character); public/waiter-face.png is 556x600, a tighter mobile-friendly
-// crop of the same artwork. Containers are sized to each image's own aspect
-// ratio so object-fit: contain never letterboxes or distorts either one.
+// public/waiter-face.png (556x600) is a near-square crop of the same
+// background-removed reference character, used at both sizes so it can
+// fill a perfectly circular badge (object-fit: cover) without letterboxing.
 const BADGE = {
-  lg: { width: 42, height: 80, src: "/waiter-full.png", intrinsicW: 556, intrinsicH: 1064 },
-  sm: { width: 41, height: 44, src: "/waiter-face.png", intrinsicW: 556, intrinsicH: 600 },
+  lg: { diameter: 64, src: "/waiter-face.png", intrinsicW: 556, intrinsicH: 600 },
+  sm: { diameter: 40, src: "/waiter-face.png", intrinsicW: 556, intrinsicH: 600 },
 } as const;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -204,8 +203,8 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
         type="button"
         onClick={handleClick}
         aria-label={label}
-        className="relative flex items-center justify-center rounded-[999px] border border-lb-charcoal/15 bg-white shadow-sm hover:border-lb-red/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lb-red focus-visible:outline-offset-2 transition-colors overflow-hidden"
-        style={{ height: badge.height, width: badge.width }}
+        className="relative flex items-center justify-center rounded-full border border-lb-charcoal/15 bg-white shadow-sm hover:border-lb-red/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lb-red focus-visible:outline-offset-2 transition-colors overflow-hidden"
+        style={{ height: badge.diameter, width: badge.diameter }}
       >
         <motion.div
           animate={
@@ -216,7 +215,7 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
               ? { duration: 5, repeat: Infinity, ease: "easeInOut" }
               : undefined
           }
-          style={{ width: "100%", height: "100%", overflow: "hidden" }}
+          style={{ width: "100%", height: "100%", borderRadius: "9999px", overflow: "hidden" }}
         >
           <motion.div animate={bodyControls} initial={RESTING} className="relative h-full w-full">
             <Image
@@ -225,7 +224,7 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
               width={badge.intrinsicW}
               height={badge.intrinsicH}
               priority
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </motion.div>
         </motion.div>
