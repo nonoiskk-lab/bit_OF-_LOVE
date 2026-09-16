@@ -73,17 +73,17 @@ export default function MenuClient({ initialGroup, mood }: MenuClientProps) {
   if (mood === "date") {
     return (
       <div className="pt-16 md:pt-20">
-        <div className="px-5 md:px-8 py-14 md:py-20 bg-gradient-to-b from-lb-charcoal to-[#3a1410] text-lb-cream text-center">
-          <p className="font-number text-xs tracking-[0.3em] uppercase text-lb-cream/50 mb-3">
+        <div className="px-5 md:px-8 py-14 md:py-20 bg-white text-lb-charcoal text-center">
+          <p className="font-number text-xs tracking-[0.3em] uppercase text-lb-red mb-3">
             Curated for two
           </p>
           <h1 className="font-display font-black uppercase text-4xl sm:text-5xl mb-4">
             The Date Night Picks
           </h1>
-          <p className="text-lb-cream/70 max-w-md mx-auto mb-2">
+          <p className="text-lb-neutral max-w-md mx-auto mb-2">
             Everything LOVBITES has built for a date — pair it with a private cottage.
           </p>
-          <Link href="/cottages" className="underline text-sm font-semibold">
+          <Link href="/cottages" className="underline text-sm font-semibold text-lb-red">
             Book a cottage for tonight →
           </Link>
         </div>

@@ -9,7 +9,6 @@ export default function CoffeeExperience() {
       subtitle="From a straight espresso to the Signature Cold Coffee that put LOVBITES on the map."
       navGroups={["coffee"]}
       mood="warm-dark"
-      dark
       icon="☕"
       cta="Explore Coffee"
       href="/menu?group=coffee"

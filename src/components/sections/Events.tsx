@@ -43,7 +43,7 @@ export default function Events() {
 
         <Link
           href="/catering"
-          className="inline-flex rounded-full bg-lb-charcoal text-lb-cream px-8 py-4 text-sm font-semibold hover:bg-lb-charcoal-soft transition-colors"
+          className="inline-flex rounded-full bg-lb-red text-lb-cream px-8 py-4 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
         >
           Plan Your Event
         </Link>

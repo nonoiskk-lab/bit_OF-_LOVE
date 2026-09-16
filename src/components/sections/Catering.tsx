@@ -16,7 +16,7 @@ const AUDIENCES = [
 
 export default function Catering() {
   return (
-    <section className="px-5 md:px-8 py-20 md:py-28 bg-lb-charcoal text-lb-cream">
+    <section className="px-5 md:px-8 py-20 md:py-28 bg-white text-lb-charcoal">
       <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-10 md:gap-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -32,7 +32,7 @@ export default function Catering() {
             <br />
             Off-Site.
           </h2>
-          <p className="max-w-md text-lb-cream/60 mb-8">
+          <p className="max-w-md text-lb-neutral mb-8">
             From a college fest to a corporate seminar, we bring the full LOVBITES
             menu to your event.
           </p>
@@ -52,7 +52,7 @@ export default function Catering() {
           className="grid grid-cols-2 gap-x-6 gap-y-4 content-center"
         >
           {AUDIENCES.map((a) => (
-            <p key={a} className="text-sm text-lb-cream/70 border-b border-lb-cream/10 pb-3">
+            <p key={a} className="text-sm text-lb-neutral border-b border-lb-charcoal/10 pb-3">
               {a}
             </p>
           ))}

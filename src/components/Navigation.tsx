@@ -114,7 +114,7 @@ export default function Navigation() {
             animate={{ clipPath: "circle(150% at 100% 0%)" }}
             exit={{ clipPath: "circle(0% at 100% 0%)" }}
             transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-lb-charcoal text-lb-cream flex flex-col justify-center px-8"
+            className="fixed inset-0 z-40 bg-white text-lb-charcoal flex flex-col justify-center px-8"
           >
             <nav className="flex flex-col gap-2">
               {LINKS.map((l, i) => (
@@ -143,18 +143,18 @@ export default function Navigation() {
               <Link
                 href="/cottages"
                 onClick={() => setOpen(false)}
-                className="rounded-full bg-lb-red px-6 py-3 text-sm font-semibold"
+                className="rounded-full bg-lb-red px-6 py-3 text-sm font-semibold text-lb-cream"
               >
                 Book Private Cottage
               </Link>
               <a
                 href="tel:+919999999999"
-                className="rounded-full border border-lb-cream/40 px-6 py-3 text-sm font-semibold"
+                className="rounded-full border border-lb-charcoal/20 px-6 py-3 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
               >
                 Call LOVBITES
               </a>
             </motion.div>
-            <p className="mt-10 font-body text-xs uppercase tracking-[0.3em] text-lb-cream/50">
+            <p className="mt-10 font-body text-xs uppercase tracking-[0.3em] text-lb-neutral">
               Hirapur • Dhanbad, Jharkhand
             </p>
           </motion.div>

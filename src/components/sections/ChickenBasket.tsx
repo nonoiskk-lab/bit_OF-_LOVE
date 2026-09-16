@@ -13,8 +13,8 @@ export default function ChickenBasket() {
   const rest = category.items.filter((i) => !i.hero);
 
   return (
-    <section className="relative bg-lb-charcoal text-lb-cream px-5 md:px-8 py-20 md:py-28 overflow-hidden">
-      <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-lb-red/20 blur-3xl" />
+    <section className="relative bg-white text-lb-charcoal px-5 md:px-8 py-20 md:py-28 overflow-hidden">
+      <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-lb-red/10 blur-3xl" />
       <div className="relative mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -32,7 +32,7 @@ export default function ChickenBasket() {
               <br />
               Basket
             </h2>
-            <p className="mt-4 text-lb-cream/60 max-w-sm">
+            <p className="mt-4 text-lb-neutral max-w-sm">
               Crispy. Grilled. Unapologetic. A street-food-style basket, open evenings
               alongside the full LOVBITES menu.
             </p>
@@ -57,8 +57,8 @@ export default function ChickenBasket() {
             <div className="absolute top-4 left-4">
               <Pill tone="red">⭐ Hero Combo</Pill>
             </div>
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-lb-charcoal via-lb-charcoal/70 to-transparent p-5">
-              <h3 className="font-display font-bold uppercase text-2xl">{combo.name}</h3>
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-lb-charcoal/90 via-lb-charcoal/60 to-transparent p-5">
+              <h3 className="font-display font-bold uppercase text-2xl text-lb-cream">{combo.name}</h3>
               <p className="text-sm text-lb-cream/70 mt-1">{combo.description}</p>
               <p className="font-number text-xl font-bold text-lb-red mt-2">
                 {formatPrice(combo.price)}
@@ -74,9 +74,9 @@ export default function ChickenBasket() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="rounded-xl bg-lb-charcoal-soft p-4 flex flex-col justify-between"
+                className="rounded-xl bg-lb-cream-soft p-4 flex flex-col justify-between"
               >
-                <p className="font-display font-semibold uppercase text-sm leading-snug">
+                <p className="font-display font-semibold uppercase text-sm leading-snug text-lb-charcoal">
                   {item.name}
                 </p>
                 <p className="font-number text-lb-red font-semibold mt-3">

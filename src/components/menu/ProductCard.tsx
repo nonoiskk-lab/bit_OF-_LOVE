@@ -49,7 +49,7 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
           <span className="font-number font-semibold text-lb-red">{formatPrice(item.price)}</span>
           <button
             onClick={() => addItem(item, categoryTitle)}
-            className="rounded-full bg-lb-charcoal text-lb-cream text-xs font-semibold px-4 py-2 hover:bg-lb-red transition-colors"
+            className="rounded-full bg-lb-red text-lb-cream text-xs font-semibold px-4 py-2 hover:bg-lb-red-deep transition-colors"
           >
             Add
           </button>

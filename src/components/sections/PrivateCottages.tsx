@@ -58,7 +58,7 @@ export default function PrivateCottages() {
                 </p>
                 <Link
                   href={`/cottages?select=${cottage.id}`}
-                  className="mt-5 inline-flex rounded-full bg-lb-charcoal text-lb-cream px-6 py-3 text-sm font-semibold hover:bg-lb-charcoal-soft transition-colors"
+                  className="mt-5 inline-flex rounded-full bg-lb-red text-lb-cream px-6 py-3 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
                 >
                   Book {cottage.name}
                 </Link>

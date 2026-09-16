@@ -29,7 +29,7 @@ export default function Location() {
             href="https://www.google.com/maps/search/?api=1&query=Hirapur%2C+Dhanbad%2C+Jharkhand"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex rounded-full bg-lb-charcoal text-lb-cream px-7 py-3.5 text-sm font-semibold hover:bg-lb-charcoal-soft transition-colors"
+            className="inline-flex rounded-full bg-lb-red text-lb-cream px-7 py-3.5 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
           >
             Get Directions
           </a>

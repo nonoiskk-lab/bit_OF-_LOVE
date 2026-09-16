@@ -42,7 +42,7 @@ export default function MenuJourney() {
       <div className="mt-10 text-center">
         <Link
           href="/menu"
-          className="inline-flex rounded-full bg-lb-charcoal text-lb-cream px-8 py-4 text-sm font-semibold hover:bg-lb-charcoal-soft transition-colors"
+          className="inline-flex rounded-full bg-lb-red text-lb-cream px-8 py-4 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
         >
           Open Full Digital Menu
         </Link>

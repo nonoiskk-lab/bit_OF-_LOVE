@@ -16,6 +16,7 @@ const baloo = Baloo_2({
 interface LovbitesLogoProps {
   size?: "sm" | "lg";
   showTagline?: boolean;
+  align?: "center" | "start";
   className?: string;
 }
 
@@ -31,11 +32,19 @@ const SIZE = {
 export default function LovbitesLogo({
   size = "lg",
   showTagline = true,
+  align = "center",
   className,
 }: LovbitesLogoProps) {
   const s = SIZE[size];
   return (
-    <div className={clsx("flex flex-col items-center", baloo.variable, className)}>
+    <div
+      className={clsx(
+        "flex flex-col",
+        align === "center" ? "items-center" : "items-start",
+        baloo.variable,
+        className
+      )}
+    >
       <div
         className={clsx(
           "flex items-center justify-center font-extrabold text-lb-red leading-none",
