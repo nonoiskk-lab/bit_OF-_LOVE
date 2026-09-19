@@ -123,3 +123,22 @@ export interface CateringLead {
   foodPreference: "veg" | "nonveg" | "mixed";
   message?: string;
 }
+
+export interface WhatsAppSendResult {
+  to: string;
+  ok: boolean;
+  messageId?: string;
+  error?: string;
+}
+
+export interface WhatsAppBroadcastRecord {
+  id: string;
+  createdAt: string;
+  templateName: string;
+  languageCode: string;
+  bodyParams?: string[];
+  recipientCount: number;
+  successCount: number;
+  failureCount: number;
+  results: WhatsAppSendResult[];
+}

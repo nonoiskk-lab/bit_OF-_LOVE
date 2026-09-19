@@ -7,9 +7,10 @@ import {
   CottageBookingRecord,
   OrderRecord,
   TableBookingRecord,
+  WhatsAppBroadcastRecord,
 } from "@/lib/types";
 
-type Tab = "orders" | "tables" | "cottages" | "catering";
+type Tab = "orders" | "tables" | "cottages" | "catering" | "marketing";
 type AuthState = "checking" | "signed-out" | "signed-in";
 
 export default function AdminPage() {
@@ -25,28 +26,88 @@ export default function AdminPage() {
   const [catering, setCatering] = useState<CateringLead[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [waConfigured, setWaConfigured] = useState(false);
+  const [broadcasts, setBroadcasts] = useState<WhatsAppBroadcastRecord[]>([]);
+  const [selectedPhones, setSelectedPhones] = useState<Set<string>>(new Set());
+  const [templateName, setTemplateName] = useState("");
+  const [languageCode, setLanguageCode] = useState("en");
+  const [bodyParamsText, setBodyParamsText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+
   async function loadAll() {
     setLoading(true);
-    const [o, t, c, k] = await Promise.all([
+    const [o, t, c, k, w] = await Promise.all([
       fetch("/api/orders"),
       fetch("/api/table-booking"),
       fetch("/api/cottage-booking"),
       fetch("/api/catering"),
+      fetch("/api/admin/whatsapp"),
     ]);
 
-    if ([o, t, c, k].some((r) => r.status === 401)) {
+    if ([o, t, c, k, w].some((r) => r.status === 401)) {
       setAuth("signed-out");
       setLoading(false);
       return;
     }
 
-    const [oj, tj, cj, kj] = await Promise.all([o.json(), t.json(), c.json(), k.json()]);
+    const [oj, tj, cj, kj, wj] = await Promise.all([o.json(), t.json(), c.json(), k.json(), w.json()]);
     setOrders(oj.orders ?? []);
     setTables(tj.bookings ?? []);
     setCottages(cj.bookings ?? []);
     setCatering(kj.leads ?? []);
+    setWaConfigured(Boolean(wj.configured));
+    setBroadcasts(wj.broadcasts ?? []);
     setAuth("signed-in");
     setLoading(false);
+  }
+
+  // Every customer we hold a phone number for, deduped, as candidate WhatsApp recipients.
+  const customers = new Map<string, string>();
+  for (const o of orders) customers.set(o.customer.phone, o.customer.name);
+  for (const t of tables) customers.set(t.customer.phone, t.customer.name);
+  for (const c of cottages) customers.set(c.customer.phone, c.customer.name);
+  for (const k of catering) customers.set(k.phone, k.name);
+  const customerList = [...customers.entries()].map(([phone, name]) => ({ phone, name }));
+
+  function toggleRecipient(phone: string) {
+    setSelectedPhones((prev) => {
+      const next = new Set(prev);
+      if (next.has(phone)) next.delete(phone);
+      else next.add(phone);
+      return next;
+    });
+  }
+
+  async function handleSendBroadcast(e: React.FormEvent) {
+    e.preventDefault();
+    setSendError(null);
+    setSending(true);
+    try {
+      const bodyParams = bodyParamsText
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const res = await fetch("/api/admin/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipients: [...selectedPhones],
+          templateName,
+          languageCode,
+          bodyParams: bodyParams.length ? bodyParams : undefined,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSendError(data.error ?? "Send failed.");
+        return;
+      }
+      setBroadcasts((prev) => [data.broadcast, ...prev]);
+      setSelectedPhones(new Set());
+    } finally {
+      setSending(false);
+    }
   }
 
   useEffect(() => {
@@ -84,6 +145,7 @@ export default function AdminPage() {
     setTables([]);
     setCottages([]);
     setCatering([]);
+    setBroadcasts([]);
     setAuth("signed-out");
   }
 
@@ -130,6 +192,7 @@ export default function AdminPage() {
     { id: "tables", label: "Table Bookings", count: tables.length },
     { id: "cottages", label: "Cottage Bookings", count: cottages.length },
     { id: "catering", label: "Catering Leads", count: catering.length },
+    { id: "marketing", label: "WhatsApp Marketing", count: broadcasts.length },
   ];
 
   return (
@@ -238,8 +301,214 @@ export default function AdminPage() {
               ]}
             />
           )}
+          {tab === "marketing" && (
+            <MarketingTab
+              customers={customerList}
+              selectedPhones={selectedPhones}
+              onToggle={toggleRecipient}
+              onSelectAll={() => setSelectedPhones(new Set(customerList.map((c) => c.phone)))}
+              onClearSelection={() => setSelectedPhones(new Set())}
+              templateName={templateName}
+              onTemplateNameChange={setTemplateName}
+              languageCode={languageCode}
+              onLanguageCodeChange={setLanguageCode}
+              bodyParamsText={bodyParamsText}
+              onBodyParamsTextChange={setBodyParamsText}
+              onSubmit={handleSendBroadcast}
+              sending={sending}
+              sendError={sendError}
+              configured={waConfigured}
+              broadcasts={broadcasts}
+            />
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+function MarketingTab({
+  customers,
+  selectedPhones,
+  onToggle,
+  onSelectAll,
+  onClearSelection,
+  templateName,
+  onTemplateNameChange,
+  languageCode,
+  onLanguageCodeChange,
+  bodyParamsText,
+  onBodyParamsTextChange,
+  onSubmit,
+  sending,
+  sendError,
+  configured,
+  broadcasts,
+}: {
+  customers: { phone: string; name: string }[];
+  selectedPhones: Set<string>;
+  onToggle: (phone: string) => void;
+  onSelectAll: () => void;
+  onClearSelection: () => void;
+  templateName: string;
+  onTemplateNameChange: (v: string) => void;
+  languageCode: string;
+  onLanguageCodeChange: (v: string) => void;
+  bodyParamsText: string;
+  onBodyParamsTextChange: (v: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  sending: boolean;
+  sendError: string | null;
+  configured: boolean;
+  broadcasts: WhatsAppBroadcastRecord[];
+}) {
+  return (
+    <div className="space-y-8">
+      <div className="rounded-xl bg-lb-red/10 border border-lb-red/30 text-sm text-lb-red-deep px-4 py-3">
+        Marketing messages must use a WhatsApp template pre-approved by Meta, and can only go to
+        customers who&apos;ve opted in to receive them — sending unsolicited bulk messages violates
+        WhatsApp&apos;s Business Policy and risks the number being banned. This sends the exact
+        template name and variables you enter below; it never sends free-text bulk messages.
+      </div>
+
+      {!configured && (
+        <div className="rounded-xl bg-lb-charcoal/5 border border-lb-charcoal/15 text-sm px-4 py-3">
+          WhatsApp API isn&apos;t configured on this server yet. Set{" "}
+          <code className="font-mono text-xs">WHATSAPP_ACCESS_TOKEN</code> and{" "}
+          <code className="font-mono text-xs">WHATSAPP_PHONE_NUMBER_ID</code> (from a Meta WhatsApp
+          Business Cloud API app) in the environment, then reload this page.
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-sm uppercase tracking-wide">
+            Recipients ({selectedPhones.size} selected of {customers.length})
+          </h2>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onSelectAll}
+              className="rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide border border-lb-charcoal/20"
+            >
+              Select All
+            </button>
+            <button
+              type="button"
+              onClick={onClearSelection}
+              className="rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide border border-lb-charcoal/20"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        {customers.length === 0 ? (
+          <p className="text-sm text-lb-neutral py-4">
+            No customer phone numbers yet — they show up here once orders, bookings, or catering
+            leads come in.
+          </p>
+        ) : (
+          <div className="max-h-64 overflow-y-auto border border-lb-charcoal/10 rounded-lg divide-y divide-lb-charcoal/5">
+            {customers.map((c) => (
+              <label key={c.phone} className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedPhones.has(c.phone)}
+                  onChange={() => onToggle(c.phone)}
+                />
+                <span>
+                  {c.name} · {c.phone}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-4 max-w-md">
+        <div>
+          <label className="block text-sm font-semibold mb-1.5">Template name</label>
+          <input
+            type="text"
+            required
+            value={templateName}
+            onChange={(e) => onTemplateNameChange(e.target.value)}
+            placeholder="e.g. weekend_offer"
+            className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-2.5 text-sm"
+          />
+          <p className="text-xs text-lb-neutral mt-1">
+            Must exactly match a template already approved in Meta Business Manager.
+          </p>
+        </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1.5">Language code</label>
+          <input
+            type="text"
+            value={languageCode}
+            onChange={(e) => onLanguageCodeChange(e.target.value)}
+            placeholder="en"
+            className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-2.5 text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1.5">
+            Template body variables (comma-separated, optional)
+          </label>
+          <input
+            type="text"
+            value={bodyParamsText}
+            onChange={(e) => onBodyParamsTextChange(e.target.value)}
+            placeholder="e.g. 20% off, Sunday"
+            className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-2.5 text-sm"
+          />
+          <p className="text-xs text-lb-neutral mt-1">
+            Fills the template&apos;s {"{{1}}"}, {"{{2}}"}, … placeholders in order, if it has any.
+          </p>
+        </div>
+        {sendError && <p className="text-sm text-lb-red">{sendError}</p>}
+        <button
+          type="submit"
+          disabled={sending || !configured || selectedPhones.size === 0 || !templateName}
+          className="rounded-full bg-lb-red text-lb-cream px-6 py-3 text-sm font-semibold disabled:opacity-60"
+        >
+          {sending ? "Sending…" : `Send to ${selectedPhones.size} recipient(s)`}
+        </button>
+      </form>
+
+      <div>
+        <h2 className="font-semibold text-sm uppercase tracking-wide mb-3">Send History</h2>
+        {broadcasts.length === 0 ? (
+          <p className="text-sm text-lb-neutral">No broadcasts sent yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {broadcasts.map((b) => (
+              <div key={b.id} className="border border-lb-charcoal/10 rounded-lg px-4 py-3 text-sm">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold">{b.templateName}</span>
+                  <span className="text-xs text-lb-neutral">
+                    {new Date(b.createdAt).toLocaleString("en-IN")}
+                  </span>
+                </div>
+                <p className="text-lb-neutral">
+                  {b.successCount}/{b.recipientCount} delivered to the API successfully
+                  {b.failureCount > 0 ? `, ${b.failureCount} failed` : ""}.
+                </p>
+                {b.failureCount > 0 && (
+                  <ul className="mt-1.5 text-xs text-lb-red space-y-0.5">
+                    {b.results
+                      .filter((r) => !r.ok)
+                      .map((r) => (
+                        <li key={r.to}>
+                          {r.to}: {r.error}
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
