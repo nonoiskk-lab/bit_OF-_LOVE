@@ -27,8 +27,8 @@ export default function DateNight() {
             <span className="text-lb-red">Date.</span>
           </h2>
           <p className="mt-5 max-w-sm text-lb-neutral">
-            Red Romance, a shared dessert, a private cottage. Everything LOVBITES
-            builds for two.
+            Sizzlers, kebabs, a private cottage. Everything LOVBITES builds for
+            two.
           </p>
           <Link
             href="/cottages"

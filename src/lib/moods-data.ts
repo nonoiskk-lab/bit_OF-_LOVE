@@ -12,8 +12,8 @@ export const MOODS: MoodCard[] = [
     id: "hungry",
     emoji: "🔥",
     label: "I'm Hungry",
-    description: "Burgers, pizza, quick bites — straight to the point.",
-    href: "/menu?group=quick-bites",
+    description: "Starters, curries, kebabs — straight to the point.",
+    href: "/menu?group=fine-dine",
   },
   {
     id: "fit",
@@ -33,8 +33,8 @@ export const MOODS: MoodCard[] = [
     id: "date",
     emoji: "❤️",
     label: "I'm On a Date",
-    description: "Red Romance, Date Night Dessert, a cottage for two.",
-    href: "/menu?mood=date",
+    description: "Sizzlers, kebabs, a cottage for two.",
+    href: "/cottages",
   },
   {
     id: "chicken",
@@ -47,7 +47,7 @@ export const MOODS: MoodCard[] = [
     id: "celebrate",
     emoji: "🎉",
     label: "I'm Celebrating",
-    description: "Combos, thalis, sizzlers for the table.",
+    description: "Value combos, built for sharing.",
     href: "/menu?group=combos",
   },
 ];

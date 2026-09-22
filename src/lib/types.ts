@@ -4,15 +4,9 @@ export type NavGroup =
   | "breakfast"
   | "protein"
   | "coffee"
-  | "burgers"
-  | "pizza"
-  | "pasta"
-  | "quick-bites"
   | "chicken"
   | "fine-dine"
   | "biryani"
-  | "mocktails"
-  | "dessert"
   | "combos";
 
 export interface MenuItem {
