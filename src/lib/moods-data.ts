@@ -26,7 +26,7 @@ export const MOODS: MoodCard[] = [
     id: "caffeine",
     emoji: "☕",
     label: "I Need Coffee",
-    description: "From espresso to signature cold coffee.",
+    description: "Black coffee, cold coffee and fresh coolers.",
     href: "/menu?group=coffee",
   },
   {
@@ -47,7 +47,7 @@ export const MOODS: MoodCard[] = [
     id: "celebrate",
     emoji: "🎉",
     label: "I'm Celebrating",
-    description: "Value combos, built for sharing.",
-    href: "/menu?group=combos",
+    description: "Biryani and shareable mains for the table.",
+    href: "/menu?group=biryani",
   },
 ];

@@ -59,6 +59,9 @@ export default function ProductModal({ item, mood, onClose }: ProductModalProps)
                 <div className="absolute top-4 left-4 flex gap-2">
                   {item.hero && <Pill tone="red">⭐ Signature</Pill>}
                   {item.datePick && <Pill tone="dark">❤️ Date Pick</Pill>}
+                  {item.popular && !item.hero && !item.datePick && (
+                    <Pill tone="cream">🔥 Popular</Pill>
+                  )}
                 </div>
               </div>
 

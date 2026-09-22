@@ -6,8 +6,7 @@ export type NavGroup =
   | "coffee"
   | "chicken"
   | "fine-dine"
-  | "biryani"
-  | "combos";
+  | "biryani";
 
 export interface MenuItem {
   id: string;
@@ -18,6 +17,8 @@ export interface MenuItem {
   hero?: boolean;
   datePick?: boolean;
   protein?: boolean;
+  /** Editorial "🔥 Popular" pick — local-demand-informed, not from the source sheet. */
+  popular?: boolean;
   deliveryEligible?: boolean;
   mood?: string[];
 }

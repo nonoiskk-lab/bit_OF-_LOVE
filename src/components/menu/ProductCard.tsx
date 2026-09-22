@@ -29,7 +29,10 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
           <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
             {item.hero && <Pill tone="red">⭐ Signature</Pill>}
             {item.datePick && <Pill tone="dark">❤️ Date Pick</Pill>}
-            {item.protein && !item.hero && !item.datePick && <Pill tone="cream">💪 Protein</Pill>}
+            {item.popular && !item.hero && !item.datePick && <Pill tone="cream">🔥 Popular</Pill>}
+            {item.protein && !item.hero && !item.datePick && !item.popular && (
+              <Pill tone="cream">💪 Protein</Pill>
+            )}
           </div>
         </div>
       </button>
