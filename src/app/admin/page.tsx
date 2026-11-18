@@ -50,10 +50,21 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    // Fetch-on-mount: an authenticated admin session already carries the cookie,
-    // so this doubles as the initial auth check.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadAll();
+    // Check the session first so signed-out visitors never hit the protected APIs.
+    let cancelled = false;
+    fetch("/api/admin/session")
+      .then((r) => r.json())
+      .then((data: { authenticated?: boolean }) => {
+        if (cancelled) return;
+        if (data.authenticated) loadAll();
+        else setAuth("signed-out");
+      })
+      .catch(() => {
+        if (!cancelled) setAuth("signed-out");
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
