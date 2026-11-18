@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { formatPrice } from "@/lib/utils";
+import { askPriceWhatsAppUrl, formatPrice, itemPriceLabel } from "@/lib/utils";
 import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot, Pill } from "@/components/ui/Badge";
 import { MenuItem } from "@/lib/types";
@@ -83,6 +83,19 @@ export default function ProductModal({ item, mood, onClose }: ProductModalProps)
                   {item.description ?? "Made fresh to order at LOVBITES, Hirapur."}
                 </p>
 
+                {item.askPrice ? (
+                  <div className="mt-auto">
+                    <p className="font-number text-2xl font-bold text-lb-red mb-5">{itemPriceLabel(item)}</p>
+                    <a
+                      href={askPriceWhatsAppUrl(item.name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-center rounded-full bg-lb-red text-lb-cream py-4 text-sm font-semibold hover:bg-lb-red-deep transition-colors"
+                    >
+                      Ask for Price on WhatsApp
+                    </a>
+                  </div>
+                ) : (
                 <div className="mt-auto">
                   <div className="flex items-center justify-between mb-5">
                     <span className="font-number text-2xl font-bold text-lb-red">
@@ -116,6 +129,7 @@ export default function ProductModal({ item, mood, onClose }: ProductModalProps)
                     Add {qty > 1 ? `${qty} ` : ""}to Cart — {formatPrice(item.price * qty)}
                   </button>
                 </div>
+                )}
               </div>
             </div>
           </motion.div>

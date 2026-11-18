@@ -87,7 +87,7 @@ export default function MenuClient({ initialGroup, mood }: MenuClientProps) {
             Book a cottage for tonight →
           </Link>
         </div>
-        <div className="px-5 md:px-8 py-12 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+        <div className="px-5 md:px-8 py-12 grid grid-cols-1 min-[340px]:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
           {datePicks.map((item) => (
             <ProductCard
               key={item.id}
@@ -151,7 +151,7 @@ export default function MenuClient({ initialGroup, mood }: MenuClientProps) {
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 min-[340px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                     {category.items.map((item) => (
                       <ProductCard
                         key={item.id}

@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPrice } from "@/lib/utils";
+import { askPriceWhatsAppUrl, itemPriceLabel } from "@/lib/utils";
 import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot, Pill } from "@/components/ui/Badge";
 import { MenuItem } from "@/lib/types";
@@ -36,11 +36,11 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
           </div>
         </div>
       </button>
-      <div className="p-4">
+      <div className="p-3 min-[440px]:p-4">
         <div className="flex items-start gap-2 mb-1">
           <DietDot diet={item.diet} />
-          <button onClick={onOpen} className="text-left flex-1">
-            <h3 className="font-display font-semibold uppercase text-sm leading-snug">
+          <button onClick={onOpen} className="text-left flex-1 min-w-0">
+            <h3 className="font-display font-semibold uppercase text-[11px] min-[380px]:text-xs min-[440px]:text-sm leading-snug break-words hyphens-auto">
               {item.name}
             </h3>
           </button>
@@ -48,14 +48,34 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
         {item.description && (
           <p className="text-xs text-lb-neutral mb-2 line-clamp-2">{item.description}</p>
         )}
-        <div className="flex items-center justify-between mt-2">
-          <span className="font-number font-semibold text-lb-red">{formatPrice(item.price)}</span>
-          <button
-            onClick={() => addItem(item, categoryTitle)}
-            className="rounded-full bg-lb-red text-lb-cream text-xs font-semibold px-4 py-2 hover:bg-lb-red-deep transition-colors"
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+          <span
+            className={
+              item.askPrice
+                ? "font-number text-xs font-semibold text-lb-red whitespace-nowrap"
+                : "font-number font-semibold text-lb-red"
+            }
           >
-            Add
-          </button>
+            {itemPriceLabel(item)}
+          </span>
+          {item.askPrice ? (
+            <a
+              href={askPriceWhatsAppUrl(item.name)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Ask for the price of ${item.name} on WhatsApp`}
+              className="shrink-0 rounded-full border border-lb-red text-lb-red text-xs font-semibold px-3 py-2 hover:bg-lb-red hover:text-lb-cream transition-colors"
+            >
+              Ask
+            </a>
+          ) : (
+            <button
+              onClick={() => addItem(item, categoryTitle)}
+              className="rounded-full bg-lb-red text-lb-cream text-xs font-semibold px-4 py-2 hover:bg-lb-red-deep transition-colors"
+            >
+              Add
+            </button>
+          )}
         </div>
       </div>
     </div>

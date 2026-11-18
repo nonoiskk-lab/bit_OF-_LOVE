@@ -2,6 +2,19 @@ export function formatPrice(price: number): string {
   return `₹${price.toLocaleString("en-IN")}`;
 }
 
+export const ASK_PRICE_LABEL = "Ask for price";
+
+/** Price text for a menu item — "Ask for price" when the menu has no confirmed price. */
+export function itemPriceLabel(item: { price: number; askPrice?: boolean }): string {
+  return item.askPrice ? ASK_PRICE_LABEL : formatPrice(item.price);
+}
+
+/** WhatsApp link asking LOVBITES for the price of an item. */
+export function askPriceWhatsAppUrl(itemName: string): string {
+  const text = `Hi LOVBITES, what is the price of "${itemName}"?`;
+  return `https://wa.me/919031627293?text=${encodeURIComponent(text)}`;
+}
+
 export type MealContext = "morning" | "midday" | "biryani" | "chicken-basket" | "night";
 
 /** Time-based menu logic (brief §48) — purely presentational, never blocks ordering. */

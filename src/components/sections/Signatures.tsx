@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { HERO_EDIT } from "@/lib/menu-data";
-import { formatPrice } from "@/lib/utils";
+import { itemPriceLabel } from "@/lib/utils";
 import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
 import { Pill } from "@/components/ui/Badge";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -71,7 +71,7 @@ export default function Signatures() {
                   <p className="text-xs text-lb-neutral mt-1">{item.categoryTitle}</p>
                 </div>
                 <span className="font-number font-semibold text-lb-red whitespace-nowrap">
-                  {formatPrice(item.price)}
+                  {itemPriceLabel(item)}
                 </span>
               </div>
             </Link>

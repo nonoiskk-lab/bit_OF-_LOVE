@@ -13,6 +13,8 @@ export interface MenuItem {
   id: string;
   name: string;
   price: number;
+  /** No confirmed price yet: shown as "Ask for price", never orderable online. */
+  askPrice?: boolean;
   diet: Diet;
   description?: string;
   hero?: boolean;

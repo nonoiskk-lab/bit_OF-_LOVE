@@ -14,8 +14,10 @@ import { MenuCategory } from "./types";
  * signatures carried over from the previous menu. `popular: true` = editorial
  * "🔥 Popular" picks carried over from the previous menu where the dish still exists.
  *
- * NOT on the website because the sheet has no real price (prices are never invented).
- * Add them back once a ₹ value is confirmed:
+ * `askPrice: true` = the sheet has no real price ("?" / "As per MRP"). These are shown
+ * with "Ask for price" (price stays 0 and is never displayed), cannot be added to the
+ * cart, and the order API rejects them. Prices are never invented. Once a ₹ value is
+ * confirmed, set `price` and remove `askPrice`:
  *   - Packaged Drinking Water (Beverages): price "AS PER MRP"
  *   - Best In-House (Cold Coffee Signature): price "?"
  *   - Brownie Walnut (Bakery): price "?"
@@ -35,7 +37,7 @@ import { MenuCategory } from "./types";
  *   - Apple Pie with Ice Cream (Bakery): price "?"
  *   - Fudge Brownie with Ice Cream (Bakery): price "?"
  *
- * Total: 256 items in 34 categories.
+ * Total: 274 items in 36 categories.
  */
 export const MENU: MenuCategory[] = [
   {
@@ -78,6 +80,7 @@ export const MENU: MenuCategory[] = [
     mood: "warm-dark",
     timeContext: "all-day",
     items: [
+      { id: "packaged-drinking-water", name: "Packaged Drinking Water", price: 0, diet: "veg", askPrice: true, description: "Sealed packaged drinking water, as per MRP." },
       { id: "aerated-soft-drink", name: "Aerated Soft Drink", price: 50, diet: "veg", description: "Chilled packaged soft drink; flavour as available." },
       { id: "fresh-lime-spark", name: "Fresh Lime Spark", price: 99, diet: "veg", description: "Fresh lemon juice, soda and a light touch of sweetness." },
       { id: "masala-soft-drink", name: "Masala Soft Drink", price: 99, diet: "veg", description: "Chilled soft drink with fresh lemon and house masala." },
@@ -424,8 +427,20 @@ export const MENU: MenuCategory[] = [
     ],
   },
   {
-    id: "cafe-salads",
+    id: "cold-coffee",
     number: "22",
+    title: "Cold Coffee",
+    navGroup: "coffee",
+    emotionalLine: "Smooth, creamy, cold.",
+    mood: "warm-dark",
+    timeContext: "all-day",
+    items: [
+      { id: "cold-coffee-best-in-house", name: "Cold Coffee (Best In-House)", price: 0, diet: "veg", askPrice: true, description: "Rich espresso blended with chilled full-cream milk for a smooth, creamy coffee experience." },
+    ],
+  },
+  {
+    id: "cafe-salads",
+    number: "23",
     title: "Café Salads",
     navGroup: "cafe",
     emotionalLine: "Fresh, crunchy, light.",
@@ -439,7 +454,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "desserts",
-    number: "23",
+    number: "24",
     title: "Desserts",
     navGroup: "cafe",
     emotionalLine: "Save room for this.",
@@ -458,7 +473,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "pasta",
-    number: "24",
+    number: "25",
     title: "Pasta",
     navGroup: "cafe",
     emotionalLine: "Saucy, cheesy, comforting.",
@@ -477,7 +492,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "spaghetti-pesto",
-    number: "25",
+    number: "26",
     title: "Spaghetti in Pesto Sauce",
     navGroup: "cafe",
     emotionalLine: "Fresh basil, slow-tossed.",
@@ -490,7 +505,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "continental",
-    number: "26",
+    number: "27",
     title: "Continental Mains",
     navGroup: "cafe",
     emotionalLine: "Grilled, sauced, plated properly.",
@@ -504,7 +519,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "cafe-soups",
-    number: "27",
+    number: "28",
     title: "Café Soups",
     navGroup: "cafe",
     emotionalLine: "Warm, creamy, comforting.",
@@ -519,7 +534,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "cafe-starters-veg",
-    number: "28",
+    number: "29",
     title: "Café Starters (Veg)",
     navGroup: "cafe",
     emotionalLine: "Cheesy, crispy, made to share.",
@@ -537,7 +552,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "cafe-starters-non-veg",
-    number: "29",
+    number: "30",
     title: "Café Starters (Non-Veg)",
     navGroup: "cafe",
     emotionalLine: "Crunch first, questions later.",
@@ -555,7 +570,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "pizza-non-veg",
-    number: "30",
+    number: "31",
     title: "Pizza (Non-Veg)",
     navGroup: "cafe",
     emotionalLine: "Loaded, stretchy, unapologetic.",
@@ -578,7 +593,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "pizza-veg",
-    number: "31",
+    number: "32",
     title: "Pizza (Veg)",
     navGroup: "cafe",
     emotionalLine: "Classic crusts, fresh toppings.",
@@ -605,7 +620,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "build-your-pizza",
-    number: "32",
+    number: "33",
     title: "Customize Your Pizza",
     navGroup: "cafe",
     emotionalLine: "Pick a base. Pile it on.",
@@ -635,7 +650,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "burgers",
-    number: "33",
+    number: "34",
     title: "Burgers",
     navGroup: "cafe",
     emotionalLine: "Stacked and satisfying.",
@@ -652,7 +667,7 @@ export const MENU: MenuCategory[] = [
   },
   {
     id: "sandwiches",
-    number: "34",
+    number: "35",
     title: "Sandwiches",
     navGroup: "cafe",
     emotionalLine: "Quick bites, done right.",
@@ -666,6 +681,33 @@ export const MENU: MenuCategory[] = [
       { id: "egg-bhurji-sandwich", name: "Egg Bhurji Sandwich", price: 199, diet: "egg", description: "A tasty sandwich filled with spiced, scrambled egg bhurji." },
       { id: "veg-satay-sandwich", name: "Veg Satay Sandwich", price: 149, diet: "veg", description: "A satisfying sandwich layered with a flavourful vegetable patty." },
       { id: "chicken-satay-sandwich", name: "Chicken Satay Sandwich", price: 199, diet: "nonveg", description: "A hearty sandwich filled with a savoury chicken patty." },
+    ],
+  },
+  {
+    id: "bakery",
+    number: "36",
+    title: "Bakery",
+    navGroup: "cafe",
+    emotionalLine: "Baked fresh, every day.",
+    mood: "romantic",
+    timeContext: "all-day",
+    items: [
+      { id: "brownie-walnut", name: "Brownie Walnut", price: 0, diet: "veg", askPrice: true, description: "Rich, fudgy chocolate brownie topped with crunchy walnuts." },
+      { id: "brownie-oreo", name: "Brownie Oreo", price: 0, diet: "veg", askPrice: true, description: "Fudgy chocolate brownie loaded with crunchy Oreo pieces." },
+      { id: "brownie-fudge", name: "Brownie Fudge", price: 0, diet: "veg", askPrice: true, description: "Rich, moist chocolate brownie with a soft, fudgy centre." },
+      { id: "cheesecake-strawberry", name: "Cheesecake Strawberry", price: 0, diet: "veg", askPrice: true, description: "Creamy cheesecake on a buttery biscuit base, topped with strawberry." },
+      { id: "cheesecake-blueberry", name: "Cheesecake Blueberry", price: 0, diet: "veg", askPrice: true, description: "Creamy cheesecake on a buttery biscuit base, topped with blueberry compote." },
+      { id: "cheesecake-mango", name: "Cheesecake Mango", price: 0, diet: "veg", askPrice: true, description: "Creamy mango cheesecake on a buttery biscuit base." },
+      { id: "cheesecake-nutella", name: "Cheesecake Nutella", price: 0, diet: "veg", askPrice: true, description: "Creamy Nutella cheesecake on a buttery biscuit base." },
+      { id: "cheesecake-biscoff", name: "Cheesecake Biscoff", price: 0, diet: "veg", askPrice: true, description: "Creamy cheesecake on a buttery Biscoff biscuit base." },
+      { id: "apple-pie", name: "Apple Pie", price: 0, diet: "veg", askPrice: true, description: "Baked apple pie with a golden, flaky crust and warm spices." },
+      { id: "dutch-truffle", name: "Dutch Truffle", price: 0, diet: "veg", askPrice: true, description: "Moist chocolate cake layered with rich chocolate ganache." },
+      { id: "lollipop-blast", name: "Lollipop Blast", price: 0, diet: "veg", askPrice: true, description: "Chocolate-coated cake pops with dry fruits and rainbow sprinkles." },
+      { id: "cupcake-blue", name: "Cupcake Blue", price: 0, diet: "veg", askPrice: true, description: "Soft, fluffy cupcake topped with creamy blueberry frosting." },
+      { id: "ram-ball", name: "Ram Ball", price: 0, diet: "veg", askPrice: true, description: "Chocolate cake balls blended with cocoa and condensed milk, flavoured with non-alcoholic rum extract." },
+      { id: "chocolava", name: "Chocolava", price: 0, diet: "veg", askPrice: true, description: "Warm chocolate cake with a gooey molten centre." },
+      { id: "apple-pie-with-ice-cream", name: "Apple Pie with Ice Cream", price: 0, diet: "veg", askPrice: true, description: "Warm apple pie with a golden crust, served with vanilla ice cream." },
+      { id: "fudge-brownie-with-ice-cream", name: "Fudge Brownie with Ice Cream", price: 0, diet: "veg", askPrice: true, description: "Rich, fudgy chocolate brownie served with vanilla ice cream." },
     ],
   },
 ];

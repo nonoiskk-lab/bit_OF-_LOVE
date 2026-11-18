@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ALL_ITEMS } from "@/lib/menu-data";
-import { formatPrice } from "@/lib/utils";
+import { itemPriceLabel } from "@/lib/utils";
 import FoodImage from "@/components/ui/FoodImage";
 import { Pill } from "@/components/ui/Badge";
 
@@ -62,7 +62,7 @@ export default function ChickenBasket() {
               <h3 className="font-display font-bold uppercase text-2xl text-lb-cream">{combo.name}</h3>
               <p className="text-sm text-lb-cream/70 mt-1">{combo.description}</p>
               <p className="font-number text-xl font-bold text-lb-red mt-2">
-                {formatPrice(combo.price)}
+                {itemPriceLabel(combo)}
               </p>
             </div>
           </motion.div>
@@ -81,7 +81,7 @@ export default function ChickenBasket() {
                   {item.name}
                 </p>
                 <p className="font-number text-lb-red font-semibold mt-3">
-                  {formatPrice(item.price)}
+                  {itemPriceLabel(item)}
                 </p>
               </motion.div>
             ))}

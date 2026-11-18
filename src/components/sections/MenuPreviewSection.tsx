@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ALL_ITEMS } from "@/lib/menu-data";
-import { formatPrice } from "@/lib/utils";
+import { itemPriceLabel } from "@/lib/utils";
 import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot } from "@/components/ui/Badge";
 import { NavGroup } from "@/lib/types";
@@ -33,7 +33,7 @@ export default function MenuPreviewSection({
   icon = "🍽",
   limit = 4,
 }: MenuPreviewSectionProps) {
-  const items = ALL_ITEMS.filter((i) => navGroups.includes(i.navGroup)).slice(0, limit);
+  const items = ALL_ITEMS.filter((i) => navGroups.includes(i.navGroup) && !i.askPrice).slice(0, limit);
 
   return (
     <section className="px-5 md:px-8 py-20 md:py-28 bg-white text-lb-charcoal">
@@ -76,7 +76,7 @@ export default function MenuPreviewSection({
                   <p className="text-xs font-medium truncate">{item.name}</p>
                 </div>
                 <p className="font-number text-sm font-semibold text-lb-red">
-                  {formatPrice(item.price)}
+                  {itemPriceLabel(item)}
                 </p>
               </div>
             </motion.div>

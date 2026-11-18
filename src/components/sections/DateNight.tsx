@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { HERO_EDIT } from "@/lib/menu-data";
-import { formatPrice } from "@/lib/utils";
+import { itemPriceLabel } from "@/lib/utils";
 import FoodImage from "@/components/ui/FoodImage";
 
 export default function DateNight() {
@@ -50,7 +50,7 @@ export default function DateNight() {
               <FoodImage mood="romantic" ratio="portrait" icon="❤️" className="rounded-xl" />
               <p className="mt-3 text-xs md:text-sm font-semibold leading-tight">{item.name}</p>
               <p className="font-number text-lb-red text-sm font-semibold">
-                {formatPrice(item.price)}
+                {itemPriceLabel(item)}
               </p>
             </motion.div>
           ))}

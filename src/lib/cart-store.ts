@@ -29,6 +29,7 @@ export const useCartStore = create<CartState>()(
       lines: [],
       isOpen: false,
       addItem: (item, categoryTitle, quantity = 1, note) => {
+        if (item.askPrice) return; // no confirmed price: can't be ordered online
         const existing = get().lines.find((l) => l.item.id === item.id);
         if (existing) {
           set({

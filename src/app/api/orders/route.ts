@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   for (const raw of rawLines as Array<Record<string, unknown>>) {
     const item = MENU_ITEMS_BY_ID.get(String(raw?.itemId ?? ""));
     const quantity = intInRange(raw?.quantity, 1, 50);
-    if (!item || !quantity) {
+    if (!item || item.askPrice || !quantity) {
       return NextResponse.json(
         { error: "One of the items in your cart is no longer available. Please refresh the menu." },
         { status: 400 }
