@@ -27,7 +27,7 @@ export default function DateNight() {
             <span className="text-lb-red">Date.</span>
           </h2>
           <p className="mt-5 max-w-sm text-lb-neutral">
-            Sizzlers, kebabs, a private cottage. Everything LOVBITES builds for
+            Kebabs, signature curries, a private cottage. Everything LOVBITES builds for
             two.
           </p>
           <Link

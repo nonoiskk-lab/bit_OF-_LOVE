@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Order Online",
   description:
-    "Order LOVBITES food online for delivery or pickup in Hirapur, Dhanbad — breakfast, protein bowls, coffee, chicken, biryani and more.",
+    "Order LOVBITES food online for delivery or pickup in Hirapur, Dhanbad — breakfast, pizza, pasta, burgers, chicken, biryani and more.",
   alternates: { canonical: "/order" },
 };
 

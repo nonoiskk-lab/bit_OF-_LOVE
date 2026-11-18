@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { NAV_GROUP_ORDER, NAV_GROUP_LABELS } from "@/lib/menu-data";
+import { ALL_ITEMS, NAV_GROUP_ORDER, NAV_GROUP_LABELS } from "@/lib/menu-data";
 import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function MenuJourney() {
@@ -11,7 +11,7 @@ export default function MenuJourney() {
       <SectionHeading
         eyebrow="07 — The Full Menu"
         title="One Menu. Every Craving."
-        subtitle="146 dishes, organized so you never have to scroll blindly. Pick a category, or let your mood decide."
+        subtitle={`${ALL_ITEMS.length} dishes, organized so you never have to scroll blindly. Pick a category, or let your mood decide.`}
         className="mb-12 md:mb-14"
       />
 

@@ -4,6 +4,7 @@ export type NavGroup =
   | "breakfast"
   | "protein"
   | "coffee"
+  | "cafe"
   | "chicken"
   | "fine-dine"
   | "biryani";

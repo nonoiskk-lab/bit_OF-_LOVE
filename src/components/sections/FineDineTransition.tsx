@@ -23,7 +23,7 @@ export default function FineDineTransition() {
           <span className="text-lb-red">Begins.</span>
         </h2>
         <p className="mt-6 max-w-lg mx-auto text-lb-neutral">
-          Kebabs off the tandoor, slow-cooked curries, sizzlers and biryani —
+          Kebabs off the tandoor, slow-cooked curries, Indo-Chinese and biryani —
           LOVBITES after dark.
         </p>
         <Link

@@ -6,11 +6,11 @@ export default function CoffeeExperience() {
       number="05"
       eyebrow="Coffee"
       title="Need a Little Boost?"
-      subtitle="Black coffee, cold coffee and fresh coolers — whatever the day needs."
+      subtitle="Masala tea, cappuccino, mocktails and thick shakes — whatever the day needs."
       navGroups={["coffee"]}
       mood="warm-dark"
       icon="☕"
-      cta="Explore Coffee"
+      cta="Explore Beverages"
       href="/menu?group=coffee"
       limit={4}
     />

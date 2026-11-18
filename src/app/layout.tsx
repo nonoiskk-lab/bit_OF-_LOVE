@@ -48,6 +48,7 @@ export const metadata: Metadata = {
     "coffee shop Dhanbad",
     "chicken restaurant Dhanbad",
     "biryani Dhanbad",
+    "pizza in Dhanbad",
     "couple cafe Dhanbad",
     "private cottage restaurant Dhanbad",
     "birthday restaurant Dhanbad",

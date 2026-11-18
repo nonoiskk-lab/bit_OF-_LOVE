@@ -2,15 +2,16 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { MENU } from "@/lib/menu-data";
+import { ALL_ITEMS } from "@/lib/menu-data";
 import { formatPrice } from "@/lib/utils";
 import FoodImage from "@/components/ui/FoodImage";
 import { Pill } from "@/components/ui/Badge";
 
 export default function ChickenBasket() {
-  const category = MENU.find((c) => c.id === "chicken-basket")!;
-  const combo = category.items.find((i) => i.hero)!;
-  const rest = category.items.filter((i) => !i.hero);
+  const items = ALL_ITEMS.filter((i) => i.navGroup === "chicken");
+  const combo = items.find((i) => i.hero) ?? items[0];
+  const rest = items.filter((i) => i !== combo).slice(0, 6);
+  if (!combo) return null;
 
   return (
     <section className="relative bg-white text-lb-charcoal px-5 md:px-8 py-20 md:py-28 overflow-hidden">

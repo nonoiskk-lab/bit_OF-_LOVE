@@ -6,7 +6,7 @@ export default function ProteinLab() {
       number="04"
       eyebrow="Protein Lab"
       title="Good Food. Stronger Choices."
-      subtitle="Protein breakfasts, power bowls and whey shakes — built for people who train as hard as they eat."
+      subtitle="Egg-house omelettes, scrambles and an extra egg boost — protein-first, all day."
       navGroups={["protein"]}
       mood="clean"
       icon="💪"

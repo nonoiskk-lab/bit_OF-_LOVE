@@ -22,7 +22,7 @@ export default function BrandStory() {
         </h2>
         <p className="text-lb-neutral max-w-xl mx-auto">
           LOVBITES started as a simple idea: Dhanbad deserved a place where a
-          protein bowl, a proper cold coffee and a private table for two could all
+          protein-packed breakfast, a proper café menu and a private table for two could all
           live under one roof. Everything on this menu is built around that.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-2 text-xs uppercase tracking-widest text-lb-neutral/70">

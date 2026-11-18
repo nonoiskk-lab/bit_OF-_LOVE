@@ -12,6 +12,7 @@ const MOOD_BY_GROUP: Record<string, ImageMood> = {
   breakfast: "bright",
   protein: "clean",
   coffee: "warm-dark",
+  cafe: "playful",
   chicken: "bold",
   "fine-dine": "elegant",
   biryani: "elegant",
@@ -20,11 +21,17 @@ const MOOD_BY_GROUP: Record<string, ImageMood> = {
   combos: "bold",
 };
 
+const COUNT_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen"];
+
+function countWord(n: number): string {
+  return COUNT_WORDS[n] ?? String(n);
+}
+
 export default function Signatures() {
   return (
     <section className="py-20 md:py-28 bg-lb-off-white">
       <div className="px-5 md:px-8 flex items-end justify-between gap-6 mb-10 md:mb-14">
-        <SectionHeading eyebrow="03 — The LOVBITES Edit" title="Thirteen Dishes. Zero Doubt." />
+        <SectionHeading eyebrow="03 — The LOVBITES Edit" title={`${countWord(HERO_EDIT.length)} Dishes. Zero Doubt.`} />
         <Link
           href="/menu"
           className="hidden sm:inline-block whitespace-nowrap rounded-full border border-lb-charcoal/20 px-5 py-2.5 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
