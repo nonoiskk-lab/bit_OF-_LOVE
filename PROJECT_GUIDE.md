@@ -436,6 +436,23 @@ you need to redo it.
 
 ---
 
+## 10b. Production audit changes (Nov 2026)
+
+- **Storage**: `file-store.ts` now writes to Supabase (`lovbites_records`
+  table, `supabase/schema.sql`) whenever `SUPABASE_URL` +
+  `SUPABASE_SERVICE_ROLE_KEY` are set. Without them on Vercel, submissions
+  return 503 and the form shows a pre-filled **Send on WhatsApp** / **Call**
+  fallback instead of a fake success. JSON files are local-dev only.
+- **Never trust the browser**: order prices/names are rebuilt from
+  `menu-data.ts`; all inputs are validated in `src/lib/server/validate.ts`
+  (Indian mobile format, India-time dates, slot/occasion allow-lists, caps).
+  Cottage `advancePaid` is always 0 until a payment gateway exists.
+- **SEO**: `src/lib/site.ts` holds the site URL + business details used by
+  metadata, JSON-LD, `robots.ts` and `sitemap.ts`. Set
+  `NEXT_PUBLIC_SITE_URL` when a custom domain goes live.
+- **Security headers** live in `next.config.ts`; admin login locks an IP out
+  for 15 minutes after 5 wrong passwords.
+
 ## 11. Common edits — quick recipes
 
 | I want to… | Edit this |

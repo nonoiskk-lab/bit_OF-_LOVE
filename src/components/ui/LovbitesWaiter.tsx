@@ -188,7 +188,7 @@ export default function LovbitesWaiter({ size = "lg", className }: LovbitesWaite
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="hidden lg:flex flex-col items-end leading-tight rounded-2xl border border-lb-charcoal/10 bg-white px-3 py-1.5 mr-2 text-right shadow-sm hover:border-lb-red/40 transition-colors"
+          className="hidden xl:flex flex-col items-end leading-tight rounded-2xl border border-lb-charcoal/10 bg-white px-3 py-1.5 mr-2 text-right shadow-sm hover:border-lb-red/40 transition-colors"
         >
           <span className="font-number text-[10px] uppercase tracking-[0.15em] text-lb-neutral whitespace-nowrap">
             {count} item{count === 1 ? "" : "s"} &middot; {formatPrice(total)}

@@ -174,9 +174,9 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
       </section>
 
       <div className="px-5 md:px-8 py-12 md:py-16 max-w-3xl mx-auto">
-        <div className="flex items-center gap-2 mb-10 text-xs font-semibold uppercase tracking-wide text-lb-neutral">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-2 mb-10 text-[11px] sm:text-xs font-semibold uppercase tracking-normal sm:tracking-wide text-lb-neutral">
           {(["date", "select", "details"] as Step[]).map((s, i) => (
-            <div key={s} className="flex items-center gap-2">
+            <div key={s} className="flex items-center gap-1.5 sm:gap-2">
               <span
                 className={clsx(
                   "h-6 w-6 rounded-full flex items-center justify-center",

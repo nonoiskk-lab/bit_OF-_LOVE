@@ -31,7 +31,7 @@ export default function MenuJourney() {
               <span className="font-number text-xs opacity-50 group-hover:opacity-80">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="font-display font-bold uppercase text-sm md:text-base leading-tight">
+              <span className="font-display font-bold uppercase text-xs sm:text-sm md:text-base leading-tight break-words">
                 {NAV_GROUP_LABELS[group]}
               </span>
             </Link>

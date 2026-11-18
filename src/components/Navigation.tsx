@@ -35,8 +35,16 @@ export default function Navigation() {
           </Link>
 
           <nav aria-label="Main" className="hidden lg:flex items-center gap-5 xl:gap-8 font-body text-sm font-semibold uppercase tracking-wide">
-            {LINKS.slice(0, 6).map((l) => (
-              <Link key={l.href} href={l.href} className="hover:text-lb-red transition-colors">
+            {LINKS.slice(0, 6).map((l, i) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                // Protein/Coffee are menu shortcuts — hidden on narrower laptops so the
+                // header never wraps once the cart pill appears.
+                className={`whitespace-nowrap hover:text-lb-red transition-colors ${
+                  i === 2 || i === 3 ? "hidden xl:inline" : ""
+                }`}
+              >
                 {l.label}
               </Link>
             ))}
@@ -45,13 +53,13 @@ export default function Navigation() {
           <div className="hidden lg:flex items-center gap-3">
             <Link
               href="/table"
-              className="rounded-full border border-lb-charcoal/20 px-5 py-2.5 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
+              className="whitespace-nowrap rounded-full border border-lb-charcoal/20 px-5 py-2.5 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
             >
               Book a Table
             </Link>
             <Link
               href="/order"
-              className="rounded-full bg-lb-red px-5 py-2.5 text-sm font-semibold text-lb-cream hover:bg-lb-red-deep transition-colors"
+              className="whitespace-nowrap rounded-full bg-lb-red px-5 py-2.5 text-sm font-semibold text-lb-cream hover:bg-lb-red-deep transition-colors"
             >
               Order Now
             </Link>
