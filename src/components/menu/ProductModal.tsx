@@ -3,10 +3,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { askPriceWhatsAppUrl, formatPrice, itemPriceLabel } from "@/lib/utils";
-import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
+import { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot, Pill } from "@/components/ui/Badge";
 import { MenuItem } from "@/lib/types";
 import { useCartStore } from "@/lib/cart-store";
+import { MENU } from "@/lib/menu-data";
+import { AvailabilityBadge } from "@/components/menu/CategoryHeader";
 
 interface ProductModalProps {
   item: (MenuItem & { categoryTitle: string }) | null;
@@ -17,6 +20,8 @@ interface ProductModalProps {
 export default function ProductModal({ item, mood, onClose }: ProductModalProps) {
   const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
+
+  const availability = item ? MENU.find((c) => c.title === item.categoryTitle)?.availability : undefined;
 
   const close = () => {
     setQty(1);
@@ -43,11 +48,15 @@ export default function ProductModal({ item, mood, onClose }: ProductModalProps)
           >
             <div className="bg-lb-off-white rounded-t-3xl md:rounded-3xl overflow-hidden w-full md:max-w-3xl md:grid md:grid-cols-2 max-h-[92svh] md:max-h-[85vh] overflow-y-auto">
               <div className="relative">
-                <FoodImage
+                <MenuItemImage
+                  item={item}
                   mood={mood}
                   ratio="wide"
+                  context={item.categoryTitle}
                   icon={item.datePick ? "❤️" : "🍽"}
-                  className="h-56 md:h-full"
+                  sizes="(min-width: 768px) 384px, 100vw"
+                  priority
+                  className="md:h-full md:aspect-auto md:min-h-[22rem]"
                 />
                 <button
                   onClick={close}
@@ -79,6 +88,11 @@ export default function ProductModal({ item, mood, onClose }: ProductModalProps)
                   </span>
                   {item.protein && <Pill tone="cream">💪 Protein</Pill>}
                 </div>
+                {availability && (
+                  <div className="mb-4">
+                    <AvailabilityBadge availability={availability} />
+                  </div>
+                )}
                 <p className="text-sm text-lb-neutral mb-6">
                   {item.description ?? "Made fresh to order at LOVBITES, Hirapur."}
                 </p>

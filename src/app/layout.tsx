@@ -82,7 +82,7 @@ const restaurantJsonLd = {
   logo: `${SITE_URL}/logo.png`,
   image: `${SITE_URL}/og-image.jpg`,
   telephone: SITE.phoneE164,
-  servesCuisine: ["Cafe", "Indian", "Chinese", "Continental", "Healthy"],
+  servesCuisine: ["Cafe", "North Indian", "Mughlai", "Indo-Chinese", "Continental", "Italian", "Bakery"],
   priceRange: "₹₹",
   acceptsReservations: true,
   hasMenu: `${SITE_URL}/menu`,

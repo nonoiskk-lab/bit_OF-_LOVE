@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { HERO_EDIT } from "@/lib/menu-data";
 import { itemPriceLabel } from "@/lib/utils";
-import FoodImage from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
 
 export default function DateNight() {
   const datePicks = HERO_EDIT.filter((i) => i.datePick);
@@ -47,7 +47,15 @@ export default function DateNight() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <FoodImage mood="romantic" ratio="portrait" icon="❤️" className="rounded-xl" />
+              <MenuItemImage
+                item={item}
+                mood="romantic"
+                ratio="portrait"
+                context={item.categoryTitle}
+                icon="❤️"
+                sizes="(min-width: 768px) 15vw, 30vw"
+                className="rounded-xl"
+              />
               <p className="mt-3 text-xs md:text-sm font-semibold leading-tight">{item.name}</p>
               <p className="font-number text-lb-red text-sm font-semibold">
                 {itemPriceLabel(item)}

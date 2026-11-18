@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --lb-red: #d3341f;
+  --lb-red: #d6331c;
   --lb-red-deep: #a82712;
   --lb-cream: #faf3e6;
   --lb-cream-soft: #f6ece0;
@@ -104,4 +104,20 @@ h3 {
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--lb-red);
   outline-offset: 2px;
+}
+
+/* Smart Image Auto-Fit (src/components/ui/SmartImage.tsx).
+   The frame sets the shape; any photo fills it edge to edge without distortion. */
+.menu-image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.menu-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }

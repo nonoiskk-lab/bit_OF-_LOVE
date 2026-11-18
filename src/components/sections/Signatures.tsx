@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { HERO_EDIT } from "@/lib/menu-data";
 import { itemPriceLabel } from "@/lib/utils";
-import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
+import { ImageMood } from "@/components/ui/FoodImage";
 import { Pill } from "@/components/ui/Badge";
 import SectionHeading from "@/components/ui/SectionHeading";
 
@@ -52,10 +53,13 @@ export default function Signatures() {
           >
             <Link href="/menu" className="group block">
               <div className="relative rounded-2xl overflow-hidden">
-                <FoodImage
+                <MenuItemImage
+                  item={item}
                   mood={MOOD_BY_GROUP[item.navGroup] ?? "bold"}
                   ratio="portrait"
+                  context={item.categoryTitle}
                   icon={item.datePick ? "❤️" : "⭐"}
+                  sizes="(min-width: 768px) 288px, 70vw"
                   className="group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 left-3 flex gap-2">

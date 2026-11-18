@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-menu-images.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-menu-images.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "menu:images": "node scripts/sync-menu-images.mjs --list"
   },
   "dependencies": {
     "clsx": "^2.1.1",

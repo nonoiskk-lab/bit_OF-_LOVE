@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ALL_ITEMS } from "@/lib/menu-data";
 import { itemPriceLabel } from "@/lib/utils";
-import FoodImage from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
 import { Pill } from "@/components/ui/Badge";
 
 export default function ChickenBasket() {
@@ -54,7 +54,15 @@ export default function ChickenBasket() {
             transition={{ duration: 0.5 }}
             className="md:col-span-2 relative rounded-2xl overflow-hidden"
           >
-            <FoodImage mood="bold" ratio="portrait" icon="🍗" className="h-full" />
+            <MenuItemImage
+              item={combo}
+              mood="bold"
+              ratio="portrait"
+              context={combo.categoryTitle}
+              icon="🍗"
+              sizes="(min-width: 768px) 40vw, 100vw"
+              className="h-full"
+            />
             <div className="absolute top-4 left-4">
               <Pill tone="red">⭐ Hero Combo</Pill>
             </div>

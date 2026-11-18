@@ -1,7 +1,8 @@
 "use client";
 
 import { askPriceWhatsAppUrl, itemPriceLabel } from "@/lib/utils";
-import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
+import { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot, Pill } from "@/components/ui/Badge";
 import { MenuItem } from "@/lib/types";
 import { useCartStore } from "@/lib/cart-store";
@@ -11,19 +12,23 @@ interface ProductCardProps {
   categoryTitle: string;
   mood: ImageMood;
   onOpen: () => void;
+  /** Shown on the card in search results, where the category heading isn't visible. */
+  availability?: string;
 }
 
-export default function ProductCard({ item, categoryTitle, mood, onOpen }: ProductCardProps) {
+export default function ProductCard({ item, categoryTitle, mood, onOpen, availability }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
 
   return (
-    <div className="group rounded-2xl overflow-hidden bg-lb-off-white border border-lb-charcoal/8">
+    <div className="group flex flex-col h-full rounded-2xl overflow-hidden bg-lb-off-white border border-lb-charcoal/8">
       <button onClick={onOpen} className="block w-full text-left">
         <div className="relative">
-          <FoodImage
+          <MenuItemImage
+            item={item}
             mood={mood}
-            ratio="square"
-            icon={item.datePick ? "❤️" : item.protein ? "💪" : "🍽"}
+            ratio="card"
+            context={categoryTitle}
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 340px) 50vw, 100vw"
             className="group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
@@ -36,10 +41,10 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
           </div>
         </div>
       </button>
-      <div className="p-3 min-[440px]:p-4">
+      <div className="p-3 min-[440px]:p-4 flex flex-col flex-1">
         <div className="flex items-start gap-2 mb-1">
           <DietDot diet={item.diet} />
-          <button onClick={onOpen} className="text-left flex-1 min-w-0">
+          <button onClick={onOpen} className="text-left flex-1 min-w-0 min-h-6">
             <h3 className="font-display font-semibold uppercase text-[11px] min-[380px]:text-xs min-[440px]:text-sm leading-snug break-words hyphens-auto">
               {item.name}
             </h3>
@@ -48,7 +53,12 @@ export default function ProductCard({ item, categoryTitle, mood, onOpen }: Produ
         {item.description && (
           <p className="text-xs text-lb-neutral mb-2 line-clamp-2">{item.description}</p>
         )}
-        <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+        {availability && (
+          <p className="text-[11px] text-lb-neutral/80 mb-1">
+            {categoryTitle} · {availability}
+          </p>
+        )}
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-auto pt-2">
           <span
             className={
               item.askPrice

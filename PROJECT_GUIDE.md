@@ -110,8 +110,11 @@ src/
     types.ts                      # Every data shape in the app — MenuItem, MenuCategory,
                                  #   Cottage, OrderRecord, TableBookingRecord,
                                  #   CottageBookingRecord, CateringLead, etc.
-    menu-data.ts                  # The entire menu, transcribed as static TS data
-                                 #   (~580 lines) — categories → items
+    menu-data.ts                  # The entire menu (274 items, 37 categories), GENERATED from
+                                 #   the client's Excel by scripts/import-menu-from-excel.py
+    menu-images.ts                # getMenuImage(id): photo lookup for a dish
+    menu-images.generated.ts      # Photo manifest, rebuilt from public/menu/ before dev/build
+    menu-search.ts                # Accent-insensitive menu search used on /menu
     cottages-data.ts              # The 2 cottages, static data
     moods-data.ts                 # Homepage "mood" cards (I'm Hungry / Eating Fit / …)
                                  #   each linking to a pre-filtered /menu?group=… view
@@ -294,8 +297,9 @@ project-specific code in it.
 
 `src/lib/types.ts` is the contract every other file follows. Static
 content (menu, cottages, moods) is plain TypeScript data files, not a CMS
-— editing the menu means editing `src/lib/menu-data.ts` directly and
-redeploying. Transactional data (orders, bookings, catering leads) is
+— the menu is regenerated from the client's Excel workbook with
+`python3 scripts/import-menu-from-excel.py <file.xlsx>` and redeployed. Dish photos
+are files in `public/menu/` named by item id (see `docs/MENU_IMAGES.md`). Transactional data (orders, bookings, catering leads) is
 created via the API routes and persisted with `file-store.ts`.
 
 ### `file-store.ts` — the one thing to replace before real production use
@@ -457,7 +461,8 @@ you need to redo it.
 
 | I want to… | Edit this |
 |---|---|
-| Change a price / add a menu item | `src/lib/menu-data.ts` |
+| Change a price / add a menu item | Update the Excel, then `python3 scripts/import-menu-from-excel.py <file.xlsx>` |
+| Add a dish photo | Drop it in `public/menu/<item-id>.jpg` (`npm run menu:images` lists ids) — see `docs/MENU_IMAGES.md` |
 | Change brand colors | `src/app/globals.css` (`:root` block) |
 | Change fonts | `src/app/layout.tsx` (font imports) + `globals.css` (`@theme inline`) |
 | Add/remove a homepage section | `src/app/page.tsx` (the ordered list) + add/remove the file in `src/components/sections/` |

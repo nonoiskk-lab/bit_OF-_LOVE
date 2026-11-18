@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ALL_ITEMS } from "@/lib/menu-data";
 import { itemPriceLabel } from "@/lib/utils";
-import FoodImage, { ImageMood } from "@/components/ui/FoodImage";
+import MenuItemImage from "@/components/menu/MenuItemImage";
+import { ImageMood } from "@/components/ui/FoodImage";
 import { DietDot } from "@/components/ui/Badge";
 import { NavGroup } from "@/lib/types";
 
@@ -69,7 +70,14 @@ export default function MenuPreviewSection({
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="rounded-xl overflow-hidden"
             >
-              <FoodImage mood={mood} ratio="square" icon={icon} />
+              <MenuItemImage
+                item={item}
+                mood={mood}
+                ratio="square"
+                context={item.categoryTitle}
+                icon={icon}
+                sizes="(min-width: 768px) 25vw, 45vw"
+              />
               <div className="p-3 bg-lb-cream-soft rounded-b-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <DietDot diet={item.diet} />

@@ -16,6 +16,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    // AVIF first (smallest), WebP fallback; the original file is kept untouched in /public.
+    formats: ["image/avif", "image/webp"],
+    // Next 16 requires an allowlist; 85 is used for menu photography (SmartImage).
+    qualities: [75, 85],
+    // Menu photos only change on deploy, so cache optimized variants for 30 days.
+    minimumCacheTTL: 2592000,
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

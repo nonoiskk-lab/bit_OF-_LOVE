@@ -31,6 +31,10 @@ export interface MenuCategory {
   number: string;
   title: string;
   navGroup: NavGroup;
+  /** The source sheet's section header this category sits under, e.g. "Fine-Dine Soups". */
+  section?: string;
+  /** The source sheet's Availability column, e.g. "1 PM – Closing" or "All Day". */
+  availability?: string;
   emotionalLine: string;
   mood: "bright" | "clean" | "warm-dark" | "bold" | "elegant" | "playful" | "romantic";
   timeContext?: "morning" | "afternoon-evening" | "evening" | "all-day";
