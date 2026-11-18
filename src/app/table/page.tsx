@@ -3,9 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SLOT_TIMES } from "@/lib/cottages-data";
+import WhatsAppFallback from "@/components/ui/WhatsAppFallback";
 
+/** Today's date in India time (YYYY-MM-DD) — same on server and browser, so no
+ * hydration mismatch and no "yesterday" bookings between 00:00–05:30 IST. */
 function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
 }
 
 export default function TableBookingPage() {
@@ -17,6 +20,7 @@ export default function TableBookingPage() {
   const [phone, setPhone] = useState("");
   const [specialRequest, setSpecialRequest] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [offline, setOffline] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [confirmedId, setConfirmedId] = useState<string | null>(null);
 
@@ -27,6 +31,7 @@ export default function TableBookingPage() {
       return;
     }
     setError(null);
+    setOffline(false);
     setSubmitting(true);
     try {
       const res = await fetch("/api/table-booking", {
@@ -44,11 +49,13 @@ export default function TableBookingPage() {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Couldn't confirm that booking.");
+        setOffline(res.status >= 500);
         return;
       }
       setConfirmedId(data.booking.id);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("We couldn't reach our booking system. Send your booking on WhatsApp or call us instead.");
+      setOffline(true);
     } finally {
       setSubmitting(false);
     }
@@ -82,8 +89,9 @@ export default function TableBookingPage() {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Date</label>
+            <label htmlFor="table-date" className="block text-sm font-semibold mb-1.5">Date</label>
             <input
+              id="table-date"
               type="date"
               min={todayStr()}
               value={date}
@@ -92,8 +100,9 @@ export default function TableBookingPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Guests</label>
+            <label htmlFor="table-guests" className="block text-sm font-semibold mb-1.5">Guests</label>
             <input
+              id="table-guests"
               type="number"
               min={1}
               max={20}
@@ -105,8 +114,8 @@ export default function TableBookingPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Time</label>
-          <div className="flex flex-wrap gap-2">
+          <p id="table-time-label" className="block text-sm font-semibold mb-2">Time</p>
+          <div role="group" aria-labelledby="table-time-label" className="flex flex-wrap gap-2">
             {SLOT_TIMES.map((t) => (
               <button
                 type="button"
@@ -123,8 +132,8 @@ export default function TableBookingPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Seating</label>
-          <div className="flex gap-2">
+          <p id="table-seating-label" className="block text-sm font-semibold mb-2">Seating</p>
+          <div role="group" aria-labelledby="table-seating-label" className="flex gap-2">
             {(["indoor", "outdoor"] as const).map((s) => (
               <button
                 type="button"
@@ -142,8 +151,11 @@ export default function TableBookingPage() {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Full Name</label>
+            <label htmlFor="table-full-name" className="block text-sm font-semibold mb-1.5">Full Name</label>
             <input
+              id="table-full-name"
+              autoComplete="name"
+              maxLength={80}
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -151,10 +163,15 @@ export default function TableBookingPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Phone</label>
+            <label htmlFor="table-phone" className="block text-sm font-semibold mb-1.5">Phone</label>
             <input
-              required
+              id="table-phone"
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              maxLength={16}
+              placeholder="10-digit mobile number"
+              required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-3 text-sm"
@@ -163,8 +180,10 @@ export default function TableBookingPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-1.5">Special Request (optional)</label>
+          <label htmlFor="table-special-request-optional" className="block text-sm font-semibold mb-1.5">Special Request (optional)</label>
           <textarea
+              id="table-special-request-optional"
+              maxLength={600}
             value={specialRequest}
             onChange={(e) => setSpecialRequest(e.target.value)}
             rows={2}
@@ -172,7 +191,23 @@ export default function TableBookingPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-lb-red">{error}</p>}
+        {error &&
+          (offline ? (
+            <WhatsAppFallback
+              error={error}
+              message={[
+                "Hi LOVBITES, I'd like to book a table:",
+                `Date: ${date}`,
+                `Time: ${time ?? "-"}`,
+                `Guests: ${guests} (${seating})`,
+                `Name: ${name}`,
+                `Phone: ${phone}`,
+                ...(specialRequest ? [`Request: ${specialRequest}`] : []),
+              ].join("\n")}
+            />
+          ) : (
+            <p role="alert" className="text-sm text-lb-red">{error}</p>
+          ))}
 
         <button
           type="submit"

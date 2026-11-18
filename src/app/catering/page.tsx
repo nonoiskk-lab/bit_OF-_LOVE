@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import FoodImage from "@/components/ui/FoodImage";
+import WhatsAppFallback from "@/components/ui/WhatsAppFallback";
 
 const EVENT_TYPES = [
   "Corporate",
@@ -26,12 +27,14 @@ export default function CateringPage() {
   const [foodPreference, setFoodPreference] = useState<"veg" | "nonveg" | "mixed">("mixed");
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [offline, setOffline] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setOffline(false);
     setSubmitting(true);
     try {
       const res = await fetch("/api/catering", {
@@ -52,11 +55,13 @@ export default function CateringPage() {
       if (!res.ok) {
         const data = await res.json();
         setError(data.error ?? "Something went wrong.");
+        setOffline(res.status >= 500);
         return;
       }
       setSubmitted(true);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("We couldn't send your request online. Send it on WhatsApp or call us instead.");
+      setOffline(true);
     } finally {
       setSubmitting(false);
     }
@@ -90,8 +95,11 @@ export default function CateringPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Full Name</label>
+                <label htmlFor="catering-full-name" className="block text-sm font-semibold mb-1.5">Full Name</label>
                 <input
+              id="catering-full-name"
+                  autoComplete="name"
+                  maxLength={80}
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -99,10 +107,15 @@ export default function CateringPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Phone</label>
+                <label htmlFor="catering-phone" className="block text-sm font-semibold mb-1.5">Phone</label>
                 <input
-                  required
+              id="catering-phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={16}
+                  placeholder="10-digit mobile number"
+                  required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-3 text-sm"
@@ -111,8 +124,9 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Email (optional)</label>
+              <label htmlFor="catering-email-optional" className="block text-sm font-semibold mb-1.5">Email (optional)</label>
               <input
+              id="catering-email-optional"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -122,8 +136,9 @@ export default function CateringPage() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Event Date</label>
+                <label htmlFor="catering-event-date" className="block text-sm font-semibold mb-1.5">Event Date</label>
                 <input
+              id="catering-event-date"
                   type="date"
                   value={eventDate}
                   onChange={(e) => setEventDate(e.target.value)}
@@ -131,8 +146,9 @@ export default function CateringPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Guest Count</label>
+                <label htmlFor="catering-guest-count" className="block text-sm font-semibold mb-1.5">Guest Count</label>
                 <input
+              id="catering-guest-count"
                   type="number"
                   min={1}
                   value={guestCount}
@@ -143,8 +159,9 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Event Type</label>
+              <label htmlFor="catering-event-type" className="block text-sm font-semibold mb-2">Event Type</label>
               <select
+              id="catering-event-type"
                 value={eventType}
                 onChange={(e) => setEventType(e.target.value)}
                 className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-3 text-sm"
@@ -158,8 +175,8 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Food Preference</label>
-              <div className="flex gap-2">
+              <p id="catering-food-preference-label" className="block text-sm font-semibold mb-2">Food Preference</p>
+              <div role="group" aria-labelledby="catering-food-preference-label" className="flex gap-2">
                 {(["veg", "nonveg", "mixed"] as const).map((f) => (
                   <button
                     type="button"
@@ -178,8 +195,9 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Budget (optional)</label>
+              <label htmlFor="catering-budget-optional" className="block text-sm font-semibold mb-1.5">Budget (optional)</label>
               <input
+              id="catering-budget-optional"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
                 placeholder="e.g. ₹300 per plate"
@@ -188,8 +206,10 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Message</label>
+              <label htmlFor="catering-message" className="block text-sm font-semibold mb-1.5">Message</label>
               <textarea
+              id="catering-message"
+              maxLength={600}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
@@ -197,7 +217,24 @@ export default function CateringPage() {
               />
             </div>
 
-            {error && <p className="text-sm text-lb-red">{error}</p>}
+            {error &&
+              (offline ? (
+                <WhatsAppFallback
+                  error={error}
+                  message={[
+                    "Hi LOVBITES, I'd like a catering quote:",
+                    `Event: ${eventType}${eventDate ? ` on ${eventDate}` : ""}`,
+                    `Guests: ${guestCount}`,
+                    `Food: ${foodPreference}`,
+                    ...(budget ? [`Budget: ${budget}`] : []),
+                    `Name: ${name}`,
+                    `Phone: ${phone}`,
+                    ...(message ? [`Details: ${message}`] : []),
+                  ].join("\n")}
+                />
+              ) : (
+                <p role="alert" className="text-sm text-lb-red">{error}</p>
+              ))}
 
             <button
               type="submit"

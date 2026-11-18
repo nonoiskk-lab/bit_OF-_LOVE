@@ -15,7 +15,7 @@ export default function Location() {
           <p className="font-number text-xs md:text-sm tracking-[0.3em] uppercase text-lb-red mb-3">
             15 — Location
           </p>
-          <h2 className="font-display font-black uppercase text-4xl sm:text-5xl leading-[0.95] mb-6">
+          <h2 className="font-display font-black uppercase text-4xl lg:text-5xl leading-[0.95] mb-6">
             Find Your Way
             <br />
             to LOVBITES.

@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import MobileStickyBar from "@/components/MobileStickyBar";
 import SiteFooter from "@/components/SiteFooter";
 import CartDrawer from "@/components/CartDrawer";
+import { SITE, SITE_URL } from "@/lib/site";
 
 const unbounded = Unbounded({
   variable: "--font-unbounded",
@@ -28,7 +29,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lovbites.example"),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
+  applicationName: "LOVBITES",
   title: {
     default: "LOVBITES — When Hunger Strikes | Hirapur, Dhanbad",
     template: "%s | LOVBITES",
@@ -57,7 +60,40 @@ export const metadata: Metadata = {
     siteName: "LOVBITES",
     locale: "en_IN",
     type: "website",
+    url: "/",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "LOVBITES — Cafe & Kitchen, Dhanbad" }],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "LOVBITES — When Hunger Strikes",
+    description: "Food, coffee, protein and private cottages in Hirapur, Dhanbad.",
+    images: ["/og-image.jpg"],
+  },
+  icons: { apple: "/apple-touch-icon.png" },
+  formatDetection: { telephone: true },
+};
+
+const restaurantJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: SITE.name,
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  image: `${SITE_URL}/og-image.jpg`,
+  telephone: SITE.phoneE164,
+  servesCuisine: ["Cafe", "Indian", "Chinese", "Continental", "Healthy"],
+  priceRange: "₹₹",
+  acceptsReservations: true,
+  hasMenu: `${SITE_URL}/menu`,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: SITE.address.street,
+    addressLocality: SITE.address.locality,
+    addressRegion: SITE.address.region,
+    postalCode: SITE.address.postalCode,
+    addressCountry: SITE.address.country,
+  },
+  hasMap: SITE.mapsUrl,
 };
 
 export const viewport: Viewport = {
@@ -73,8 +109,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${unbounded.variable} ${jakarta.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-lb-off-white text-lb-charcoal">
+        <script
+          type="application/ld+json"
+          // JSON.stringify of a static object we control — no user input.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd).replace(/</g, "\\u003c") }}
+        />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-lb-red focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-lb-cream"
+        >
+          Skip to content
+        </a>
         <Navigation />
-        <main className="flex-1 pb-16 md:pb-0">{children}</main>
+        <main id="main-content" className="flex-1 pb-16 md:pb-0">{children}</main>
         <SiteFooter />
         <MobileStickyBar />
         <CartDrawer />

@@ -27,7 +27,7 @@ export default function Catering() {
           <p className="font-number text-xs md:text-sm tracking-[0.3em] uppercase text-lb-red mb-3">
             11 — Catering
           </p>
-          <h2 className="font-display font-black uppercase text-5xl sm:text-6xl leading-[0.9] mb-6">
+          <h2 className="font-display font-black uppercase text-[2.5rem] sm:text-5xl lg:text-6xl leading-[0.9] mb-6">
             LOVBITES,
             <br />
             Off-Site.

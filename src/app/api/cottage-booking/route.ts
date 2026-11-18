@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateId, readCollection, writeCollection } from "@/lib/server/file-store";
-import { CottageBookingRecord } from "@/lib/types";
+import { appendToCollection, generateId, readCollection } from "@/lib/server/file-store";
+import { CottageBookingRecord, Occasion } from "@/lib/types";
+import { COTTAGES, OCCASIONS, SLOT_TIMES } from "@/lib/cottages-data";
+import { LIMITS, email, futureDate, indianPhone, intInRange, oneOf, readJson, storageErrorResponse, str } from "@/lib/server/validate";
 import { isAdminRequest } from "@/lib/server/admin-auth";
 
 export async function GET(req: NextRequest) {
@@ -25,22 +27,37 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const body = await readJson(req);
+  if (!body) return NextResponse.json({ error: "Invalid request." }, { status: 400 });
 
-  if (!body.cottageId || !body.date || !body.time || !body.guests || !body.occasion) {
-    return NextResponse.json({ error: "Missing required booking details." }, { status: 400 });
-  }
-  if (!body.customer?.name || !body.customer?.phone) {
-    return NextResponse.json({ error: "Name and phone are required." }, { status: 400 });
+  const cottage = COTTAGES.find((c) => c.id === body.cottageId);
+  const date = futureDate(body.date, 90);
+  const time = oneOf(body.time, SLOT_TIMES);
+  const occasion = oneOf(body.occasion, OCCASIONS.map((o) => o.id) as Occasion[]);
+  const guests = cottage ? intInRange(body.guests, 1, cottage.capacity) : undefined;
+
+  if (!cottage || !date || !time || !occasion || !guests) {
+    return NextResponse.json({ error: "Missing or invalid booking details." }, { status: 400 });
   }
 
-  const all = await readCollection<CottageBookingRecord>("cottage-bookings");
+  const customerIn = (body.customer ?? {}) as Record<string, unknown>;
+  const name = str(customerIn.name, LIMITS.name);
+  const phone = indianPhone(customerIn.phone);
+  if (!name || !phone) {
+    return NextResponse.json(
+      { error: "Please enter your name and a valid 10-digit mobile number." },
+      { status: 400 }
+    );
+  }
+
+  let all: CottageBookingRecord[];
+  try {
+    all = await readCollection<CottageBookingRecord>("cottage-bookings");
+  } catch (err) {
+    return storageErrorResponse(err);
+  }
   const conflict = all.find(
-    (b) =>
-      b.status !== "CANCELLED" &&
-      b.cottageId === body.cottageId &&
-      b.date === body.date &&
-      b.time === body.time
+    (b) => b.status !== "CANCELLED" && b.cottageId === cottage.id && b.date === date && b.time === time
   );
 
   if (conflict) {
@@ -53,19 +70,24 @@ export async function POST(req: NextRequest) {
   const booking: CottageBookingRecord = {
     id: generateId("LB-COT"),
     createdAt: new Date().toISOString(),
-    cottageId: body.cottageId,
-    date: body.date,
-    time: body.time,
-    guests: Number(body.guests),
-    occasion: body.occasion,
-    customRequest: body.customRequest,
-    customer: body.customer,
-    advancePaid: body.advancePaid ?? 0,
+    cottageId: cottage.id,
+    date,
+    time,
+    guests,
+    occasion,
+    customRequest: str(body.customRequest, LIMITS.note),
+    customer: { name, phone, email: email(customerIn.email) },
+    // No payment gateway is connected, so nothing has been paid yet. Never accept
+    // a paid amount from the browser — staff collect the advance when confirming.
+    advancePaid: 0,
     status: "CONFIRMED",
   };
 
-  all.push(booking);
-  await writeCollection("cottage-bookings", all);
+  try {
+    await appendToCollection("cottage-bookings", booking);
+  } catch (err) {
+    return storageErrorResponse(err);
+  }
 
   return NextResponse.json({ booking }, { status: 201 });
 }

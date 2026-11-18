@@ -32,7 +32,7 @@ export default function MoodSelector() {
               <span className="text-4xl md:text-5xl block mb-4 group-hover:scale-110 transition-transform duration-300">
                 {mood.emoji}
               </span>
-              <h3 className="font-display font-bold uppercase text-lg md:text-xl leading-tight">
+              <h3 className="font-display font-bold uppercase text-base lg:text-xl leading-tight break-words">
                 {mood.label}
               </h3>
               <p className="mt-2 text-sm text-lb-neutral">{mood.description}</p>

@@ -5,12 +5,15 @@ import { COTTAGES, OCCASIONS, SLOT_TIMES } from "@/lib/cottages-data";
 import { CottageBookingRecord, Occasion } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import FoodImage from "@/components/ui/FoodImage";
+import WhatsAppFallback from "@/components/ui/WhatsAppFallback";
 import clsx from "clsx";
 
 type Step = "date" | "select" | "details" | "confirmed";
 
+/** Today's date in India time (YYYY-MM-DD) — same on server and browser, so no
+ * hydration mismatch and no "yesterday" bookings between 00:00–05:30 IST. */
 function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
 }
 
 export default function CottagesClient({ initialSelect }: { initialSelect?: string }) {
@@ -27,6 +30,7 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [offline, setOffline] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState<CottageBookingRecord | null>(null);
 
@@ -68,6 +72,7 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
     e.preventDefault();
     if (!cottageId || !time) return;
     setError(null);
+    setOffline(false);
     setSubmitting(true);
     try {
       const res = await fetch("/api/cottage-booking", {
@@ -81,12 +86,12 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
           occasion,
           customRequest,
           customer: { name, phone, email },
-          advancePaid: selectedCottage?.price ?? 0,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Couldn't confirm that booking.");
+        setOffline(res.status >= 500);
         if (res.status === 409) {
           await loadAvailability(date);
           setStep("select");
@@ -97,7 +102,8 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
       setConfirmed(data.booking);
       setStep("confirmed");
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("We couldn't reach our booking system. Send your booking on WhatsApp or call us instead.");
+      setOffline(true);
     } finally {
       setSubmitting(false);
     }
@@ -189,8 +195,9 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
 
         {step === "date" && (
           <div>
-            <label className="block text-sm font-semibold mb-2">Select a date</label>
+            <label htmlFor="cottages-select-a-date" className="block text-sm font-semibold mb-2">Select a date</label>
             <input
+              id="cottages-select-a-date"
               type="date"
               min={todayStr()}
               value={date}
@@ -277,8 +284,9 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Guest Count</label>
+              <label htmlFor="cottages-guest-count" className="block text-sm font-semibold mb-1.5">Guest Count</label>
               <input
+              id="cottages-guest-count"
                 type="number"
                 min={1}
                 max={selectedCottage.capacity}
@@ -289,8 +297,8 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Occasion</label>
-              <div className="flex flex-wrap gap-2">
+              <p id="cottages-occasion-label" className="block text-sm font-semibold mb-2">Occasion</p>
+              <div role="group" aria-labelledby="cottages-occasion-label" className="flex flex-wrap gap-2">
                 {OCCASIONS.map((o) => (
                   <button
                     type="button"
@@ -308,8 +316,10 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Custom Request (optional)</label>
+              <label htmlFor="cottages-custom-request-optional" className="block text-sm font-semibold mb-1.5">Custom Request (optional)</label>
               <textarea
+              id="cottages-custom-request-optional"
+              maxLength={600}
                 value={customRequest}
                 onChange={(e) => setCustomRequest(e.target.value)}
                 rows={2}
@@ -320,8 +330,11 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Full Name</label>
+                <label htmlFor="cottages-full-name" className="block text-sm font-semibold mb-1.5">Full Name</label>
                 <input
+              id="cottages-full-name"
+                  autoComplete="name"
+                  maxLength={80}
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -329,10 +342,15 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5">Phone</label>
+                <label htmlFor="cottages-phone" className="block text-sm font-semibold mb-1.5">Phone</label>
                 <input
-                  required
+              id="cottages-phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={16}
+                  placeholder="10-digit mobile number"
+                  required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-3 text-sm"
@@ -340,8 +358,9 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Email (optional)</label>
+              <label htmlFor="cottages-email-optional" className="block text-sm font-semibold mb-1.5">Email (optional)</label>
               <input
+              id="cottages-email-optional"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -349,7 +368,24 @@ export default function CottagesClient({ initialSelect }: { initialSelect?: stri
               />
             </div>
 
-            {error && <p className="text-sm text-lb-red">{error}</p>}
+            {error &&
+              (offline ? (
+                <WhatsAppFallback
+                  error={error}
+                  message={[
+                    "Hi LOVBITES, I'd like to book a private cottage:",
+                    `Cottage: ${selectedCottage.name}`,
+                    `Date: ${date} at ${time}`,
+                    `Guests: ${guests}`,
+                    `Occasion: ${OCCASIONS.find((o) => o.id === occasion)?.label ?? occasion}`,
+                    `Name: ${name}`,
+                    `Phone: ${phone}`,
+                    ...(customRequest ? [`Request: ${customRequest}`] : []),
+                  ].join("\n")}
+                />
+              ) : (
+                <p role="alert" className="text-sm text-lb-red">{error}</p>
+              ))}
 
             <div className="flex items-center justify-between py-4 border-t border-lb-charcoal/10">
               <span className="font-semibold text-sm">Advance to Confirm</span>

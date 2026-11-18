@@ -34,7 +34,7 @@ export default function Navigation() {
             <LovbitesLogo size="sm" showTagline={false} />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 font-body text-sm font-semibold uppercase tracking-wide">
+          <nav aria-label="Main" className="hidden lg:flex items-center gap-5 xl:gap-8 font-body text-sm font-semibold uppercase tracking-wide">
             {LINKS.slice(0, 6).map((l) => (
               <Link key={l.href} href={l.href} className="hover:text-lb-red transition-colors">
                 {l.label}
@@ -42,7 +42,7 @@ export default function Navigation() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             <Link
               href="/table"
               className="rounded-full border border-lb-charcoal/20 px-5 py-2.5 text-sm font-semibold hover:border-lb-red hover:text-lb-red transition-colors"
@@ -57,7 +57,7 @@ export default function Navigation() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             <LovbitesWaiter size="sm" />
             <button
               aria-label={open ? "Close menu" : "Open menu"}
@@ -78,7 +78,7 @@ export default function Navigation() {
             </button>
           </div>
 
-          <div className="hidden md:flex ml-3">
+          <div className="hidden lg:flex ml-3">
             <LovbitesWaiter size="lg" />
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function Navigation() {
                   <Link
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="font-display font-extrabold uppercase text-5xl sm:text-6xl leading-[1.05] hover:text-lb-red transition-colors"
+                    className="font-display font-extrabold uppercase text-4xl sm:text-6xl leading-[1.05] hover:text-lb-red transition-colors"
                   >
                     {l.label}
                   </Link>

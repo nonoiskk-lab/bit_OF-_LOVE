@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCartStore, cartTotal } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/utils";
+import WhatsAppFallback from "@/components/ui/WhatsAppFallback";
 
 type Step = "cart" | "details" | "confirmed";
 
@@ -16,6 +17,7 @@ export default function OrderPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [offline, setOffline] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
@@ -24,6 +26,7 @@ export default function OrderPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setOffline(false);
     setSubmitting(true);
     try {
       const res = await fetch("/api/orders", {
@@ -44,6 +47,7 @@ export default function OrderPage() {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Something went wrong. Please try again.");
+        setOffline(res.status >= 500);
         setSubmitting(false);
         return;
       }
@@ -51,7 +55,8 @@ export default function OrderPage() {
       clear();
       setStep("confirmed");
     } catch {
-      setError("Couldn't reach the kitchen. Check your connection and try again.");
+      setError("Couldn't reach the kitchen online. Send your order on WhatsApp or call us instead.");
+      setOffline(true);
     } finally {
       setSubmitting(false);
     }
@@ -168,8 +173,11 @@ export default function OrderPage() {
       {step === "details" && (
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Full Name</label>
+            <label htmlFor="order-full-name" className="block text-sm font-semibold mb-1.5">Full Name</label>
             <input
+              id="order-full-name"
+              autoComplete="name"
+              maxLength={80}
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -177,10 +185,15 @@ export default function OrderPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1.5">Phone Number</label>
+            <label htmlFor="order-phone-number" className="block text-sm font-semibold mb-1.5">Phone Number</label>
             <input
+              id="order-phone-number"
               required
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              maxLength={16}
+              placeholder="10-digit mobile number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full rounded-lg border border-lb-charcoal/20 px-4 py-3 text-sm focus:border-lb-red focus:outline-none"
@@ -188,8 +201,11 @@ export default function OrderPage() {
           </div>
           {fulfilment === "delivery" && (
             <div>
-              <label className="block text-sm font-semibold mb-1.5">Delivery Address</label>
+              <label htmlFor="order-delivery-address" className="block text-sm font-semibold mb-1.5">Delivery Address</label>
               <textarea
+              id="order-delivery-address"
+                autoComplete="street-address"
+                maxLength={400}
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -200,8 +216,8 @@ export default function OrderPage() {
           )}
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Payment</label>
-            <div className="grid grid-cols-3 gap-2">
+            <p id="order-payment-label" className="block text-sm font-semibold mb-2">Payment</p>
+            <div role="group" aria-labelledby="order-payment-label" className="grid grid-cols-3 gap-2">
               {(["upi", "card", "cod"] as const).map((m) => (
                 <button
                   type="button"
@@ -219,7 +235,23 @@ export default function OrderPage() {
             </div>
           </div>
 
-          {error && <p className="text-sm text-lb-red">{error}</p>}
+          {error &&
+            (offline ? (
+              <WhatsAppFallback
+                error={error}
+                message={[
+                  `Hi LOVBITES, I'd like to place a ${fulfilment} order:`,
+                  ...lines.map((l) => `• ${l.quantity} × ${l.item.name} (${formatPrice(l.item.price * l.quantity)})`),
+                  `Total: ${formatPrice(total)}`,
+                  `Payment: ${paymentMethod.toUpperCase()}`,
+                  `Name: ${name}`,
+                  `Phone: ${phone}`,
+                  ...(fulfilment === "delivery" ? [`Address: ${address}`] : []),
+                ].join("\n")}
+              />
+            ) : (
+              <p role="alert" className="text-sm text-lb-red">{error}</p>
+            ))}
 
           <div className="flex items-center justify-between py-4 border-t border-lb-charcoal/10">
             <span className="font-semibold">Total</span>

@@ -17,7 +17,7 @@ export default function FineDineTransition() {
         <p className="font-number text-xs md:text-sm tracking-[0.3em] uppercase text-lb-red mb-4">
           08 — Fine Dine
         </p>
-        <h2 className="font-display font-black uppercase text-5xl sm:text-6xl md:text-7xl leading-[0.9]">
+        <h2 className="font-display font-black uppercase text-[2.5rem] sm:text-6xl lg:text-7xl leading-[0.9]">
           Now the Night
           <br />
           <span className="text-lb-red">Begins.</span>

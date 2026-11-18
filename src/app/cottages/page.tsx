@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CottagesClient from "./CottagesClient";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cottages" },
   title: "Private Cottages",
   description:
     "Book one of two private cottages at LOVBITES, Hirapur — for dates, birthdays, anniversaries and celebrations.",

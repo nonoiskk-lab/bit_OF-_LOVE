@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { appendToCollection, generateId, readCollection } from "@/lib/server/file-store";
 import { TableBookingRecord } from "@/lib/types";
 import { isAdminRequest } from "@/lib/server/admin-auth";
+import { SLOT_TIMES } from "@/lib/cottages-data";
+import { LIMITS, futureDate, indianPhone, intInRange, oneOf, readJson, storageErrorResponse, str } from "@/lib/server/validate";
 
 export async function GET(req: NextRequest) {
   if (!isAdminRequest(req)) {
@@ -12,27 +14,45 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const body = await readJson(req);
+  if (!body) return NextResponse.json({ error: "Invalid request." }, { status: 400 });
 
-  if (!body.date || !body.time || !body.guests) {
-    return NextResponse.json({ error: "Date, time and guest count are required." }, { status: 400 });
+  const date = futureDate(body.date, 90);
+  const time = oneOf(body.time, SLOT_TIMES);
+  const guests = intInRange(body.guests, 1, 20);
+  if (!date || !time || !guests) {
+    return NextResponse.json(
+      { error: "Please choose a valid date (today or later), time and guest count (1–20)." },
+      { status: 400 }
+    );
   }
-  if (!body.customer?.name || !body.customer?.phone) {
-    return NextResponse.json({ error: "Name and phone are required." }, { status: 400 });
+
+  const customerIn = (body.customer ?? {}) as Record<string, unknown>;
+  const name = str(customerIn.name, LIMITS.name);
+  const phone = indianPhone(customerIn.phone);
+  if (!name || !phone) {
+    return NextResponse.json(
+      { error: "Please enter your name and a valid 10-digit mobile number." },
+      { status: 400 }
+    );
   }
 
   const booking: TableBookingRecord = {
     id: generateId("LB-TBL"),
     createdAt: new Date().toISOString(),
-    date: body.date,
-    time: body.time,
-    guests: Number(body.guests),
+    date,
+    time,
+    guests,
     seating: body.seating === "outdoor" ? "outdoor" : "indoor",
-    customer: body.customer,
-    specialRequest: body.specialRequest,
+    customer: { name, phone },
+    specialRequest: str(body.specialRequest, LIMITS.note),
     status: "PENDING",
   };
 
-  await appendToCollection("table-bookings", booking);
+  try {
+    await appendToCollection("table-bookings", booking);
+  } catch (err) {
+    return storageErrorResponse(err);
+  }
   return NextResponse.json({ booking }, { status: 201 });
 }

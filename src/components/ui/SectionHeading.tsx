@@ -31,7 +31,7 @@ export default function SectionHeading({
       )}
       <h2
         className={clsx(
-          "font-display font-bold uppercase leading-[0.95] text-4xl sm:text-5xl md:text-6xl",
+          "font-display font-bold uppercase leading-[0.95] text-4xl sm:text-5xl lg:text-6xl",
           light ? "text-lb-cream" : "text-lb-charcoal"
         )}
       >

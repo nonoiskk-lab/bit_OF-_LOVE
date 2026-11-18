@@ -9,6 +9,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function Hero() {
   return (
     <section className="relative min-h-[92svh] flex flex-col items-center justify-center bg-white px-5 py-28 md:py-32 text-center overflow-hidden">
+      <h1 className="sr-only">LOVBITES — Cafe &amp; Kitchen in Hirapur, Dhanbad</h1>
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

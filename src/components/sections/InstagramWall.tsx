@@ -20,7 +20,7 @@ export default function InstagramWall() {
           <p className="font-number text-xs md:text-sm tracking-[0.3em] uppercase text-lb-red mb-3">
             13 — Social
           </p>
-          <h2 className="font-display font-bold uppercase text-4xl sm:text-5xl leading-[0.95]">
+          <h2 className="font-display font-bold uppercase text-2xl sm:text-4xl lg:text-5xl leading-[0.95] break-all sm:break-normal">
             @LovbitesDhanbad
           </h2>
         </div>

@@ -103,8 +103,9 @@ export default function AdminPage() {
           <p className="text-sm text-lb-neutral mb-6">
             LOVBITES staff only — orders and bookings contain customer contact details.
           </p>
-          <label className="block text-sm font-semibold mb-1.5">Password</label>
+          <label htmlFor="admin-password" className="block text-sm font-semibold mb-1.5">Password</label>
           <input
+              id="admin-password"
             type="password"
             required
             autoFocus

@@ -85,3 +85,23 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Responsive safety net (audit fix): very wide display type must never push
+   the page sideways on small screens. `clip` (not `hidden`) keeps sticky/fixed
+   positioning working. */
+html,
+body {
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+}
+
+/* Visible keyboard focus for every interactive element. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--lb-red);
+  outline-offset: 2px;
+}

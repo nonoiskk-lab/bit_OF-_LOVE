@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import MenuClient from "./MenuClient";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/menu" },
   title: "Digital Menu",
   description:
     "The full LOVBITES menu — breakfast, protein, beverages, chicken, fine dine, biryani and more. Hirapur, Dhanbad.",
